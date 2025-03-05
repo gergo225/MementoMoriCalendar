@@ -7,11 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
+import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
+import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.ui.pages.BirthdayPage
 import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
+import com.goldenraccoon.mementomoricalendar.ui.viewmodels.BirthdayViewModel
+import com.goldenraccoon.mementomoricalendar.ui.viewmodels.BirthdayViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,17 +25,13 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     BirthdayPage(
                         modifier = Modifier.padding(innerPadding),
+                        viewModel = ViewModelProvider(
+                            this,
+                            BirthdayViewModelFactory(UserSettingsRepository(userSettingsDataStore))
+                        )[BirthdayViewModel::class.java]
                     )
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainPreview() {
-    MementoMoriCalendarTheme {
-
     }
 }
