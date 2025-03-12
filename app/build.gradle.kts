@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.google.dagger.hilt)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -49,6 +51,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -90,6 +93,11 @@ dependencies {
     // optional - RxJava3 support
     implementation(libs.androidx.datastore.rxjava3)
     implementation(libs.protobuf.javalite)
+
+    // Hilt (Dagger)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }
 
 protobuf {
@@ -111,4 +119,7 @@ protobuf {
             }
         }
     }
+}
+kapt {
+    correctErrorTypes = false
 }

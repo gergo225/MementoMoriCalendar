@@ -6,8 +6,13 @@ import androidx.datastore.core.IOException
 import com.goldenraccoon.mementomoricalendar.proto.UserSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UserSettingsRepository(private val userSettingsStore: DataStore<UserSettings>) {
+@Singleton
+class UserSettingsRepository @Inject constructor(
+    private val userSettingsStore: DataStore<UserSettings>
+) {
     private val TAG = "UserSettingsRepo"
 
     val userSettingsFlow: Flow<UserSettings> = userSettingsStore.data
