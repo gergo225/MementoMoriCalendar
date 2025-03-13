@@ -8,6 +8,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -82,25 +83,18 @@ fun TotalWeeksGrid(
                     color = if (isFilled) filledCellColor else emptyCellColor
                 )
             }
-            if (year % 5 == 0 && year > 0) {
-                val text = year.toString()
-                val textLayoutResult = textMeasurer.measure(text, style)
 
-                val textX = center.x - textLayoutResult.size.width / 2
-                val fiveCellHeight = (cellSize + cellVerticalSpacingPx) * 5
-                val textY = fiveCellHeight / 2 + fiveCellHeight * (year / 5 - 1) + (year / 5 - 1) * fiveYearSplitPx - textLayoutResult.size.height / 2
-
-                if (textY <= size.height) {
-                    drawText(
-                        textMeasurer = textMeasurer,
-                        text = text,
-                        style = style,
-                        topLeft = Offset(
-                            x = textX,
-                            y = textY
-                        )
-                    )
-                }
+            val isLastYear = year == totalYears - 1
+            val shouldDrawLastFiveYearNumber = isLastYear && totalYears % 5 == 0
+            if (year % 5 == 0 || shouldDrawLastFiveYearNumber) {
+                drawFiveYearText(
+                    year = if (shouldDrawLastFiveYearNumber) year + 1 else year,
+                    textStyle = style,
+                    cellSize = cellSize,
+                    textMeasurer = textMeasurer,
+                    cellVerticalSpacingPx = cellVerticalSpacingPx,
+                    fiveYearSplitPx = fiveYearSplitPx
+                )
             }
         }
     }
@@ -115,8 +109,40 @@ private fun DrawScope.drawCell(topLeft: Offset, size: Float, color: Color) {
     )
 }
 
+private fun DrawScope.drawFiveYearText(
+    year: Int,
+    textStyle: TextStyle,
+    textMeasurer: TextMeasurer,
+    cellSize: Float,
+    cellVerticalSpacingPx: Int,
+    fiveYearSplitPx: Int
+) {
+    val text = year.toString()
+    val textLayoutResult = textMeasurer.measure(text, textStyle)
+
+    val textX = center.x - textLayoutResult.size.width / 2
+    val fiveCellHeight = cellSize * 5 + cellVerticalSpacingPx * 4
+    val textY = fiveCellHeight / 2 + (fiveCellHeight + cellVerticalSpacingPx) * (year / 5 - 1) + (year / 5 - 1) * fiveYearSplitPx - textLayoutResult.size.height / 2
+
+    if (textY <= size.height) {
+        drawText(
+            textMeasurer = textMeasurer,
+            text = text,
+            style = textStyle,
+            topLeft = Offset(
+                x = textX,
+                y = textY
+            )
+        )
+    }
+}
+
 @Preview(showSystemUi = true, device = "id:Nexus 5X")
 @Composable
 private fun TotalWeeksGridPreview() {
-    TotalWeeksGrid(modifier = Modifier.fillMaxSize(), currentWeekCount = (20.3 * 52).toInt(), totalYears = 83)
+    TotalWeeksGrid(
+        modifier = Modifier.fillMaxSize(),
+        currentWeekCount = (20.3 * 52).toInt(),
+        totalYears = 60
+    )
 }
