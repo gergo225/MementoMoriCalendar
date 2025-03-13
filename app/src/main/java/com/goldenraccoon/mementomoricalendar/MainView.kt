@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.goldenraccoon.mementomoricalendar.ui.pages.BirthdayPage
-import com.goldenraccoon.mementomoricalendar.ui.viewmodels.BirthdayViewModel
+import com.goldenraccoon.mementomoricalendar.ui.pages.WeeksGridPage
 
 enum class AppRoutes() {
     Birthday,
@@ -32,8 +30,14 @@ fun MainView() {
         ) {
             composable(route = AppRoutes.Birthday.name) {
                 BirthdayPage(
-                    viewModel = hiltViewModel()
+                    onWeeksGridButtonClicked = {
+                        navController.navigate(AppRoutes.TotalWeeksGrid.name)
+                    }
                 )
+            }
+
+            composable(route = AppRoutes.TotalWeeksGrid.name) {
+                WeeksGridPage()
             }
         }
     }
