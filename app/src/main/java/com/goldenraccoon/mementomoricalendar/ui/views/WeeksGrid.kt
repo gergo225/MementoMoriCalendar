@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -70,8 +71,11 @@ private fun WeeksGridUnit(
     filledCellColor: Color,
     emptyCellColor: Color
 ) {
+    val horizontalPadding = 32.dp
+
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.padding(horizontal = horizontalPadding)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -88,7 +92,14 @@ private fun WeeksGridUnit(
         }
 
         label?.let {
-            Text(it, modifier = Modifier.fillMaxWidth().align(Alignment.Center), textAlign = TextAlign.Center)
+            Text(
+                it,
+                modifier = Modifier
+                    .width(horizontalPadding)
+                    .align(Alignment.CenterStart)
+                    .offset(x = -horizontalPadding),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -96,7 +107,8 @@ private fun WeeksGridUnit(
 @Composable
 private fun WeeksGridRow(
     filledCellCount: Int,
-    horizontalSeparatorSize: Dp = 16.dp,
+    middleSeparatorSize: Dp = 10.dp,
+    quarterSeparatorSize: Dp = 3.dp,
     filledCellColor: Color,
     emptyCellColor: Color
 ) {
@@ -112,7 +124,8 @@ private fun WeeksGridRow(
             )
 
             if (week % WEEKS_IN_A_QUARTER == WEEKS_IN_A_QUARTER - 1 && week != WEEKS_IN_A_YEAR - 1) {
-                Spacer(modifier = Modifier.width(horizontalSeparatorSize))
+                val separatorSize = if (week == WEEKS_IN_A_YEAR / 2 - 1) middleSeparatorSize else quarterSeparatorSize
+                Spacer(modifier = Modifier.width(separatorSize))
             }
         }
     }
