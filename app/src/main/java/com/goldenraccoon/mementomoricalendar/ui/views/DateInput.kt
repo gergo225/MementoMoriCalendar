@@ -2,20 +2,21 @@ package com.goldenraccoon.mementomoricalendar.ui.views
 
 import android.icu.util.Calendar
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateInputDialog(
+fun DateInput(
     modifier: Modifier = Modifier,
-    onDateSelected: (Long) -> Unit
+    onDateSelected: (Long?) -> Unit
 ) {
     val datePickerState = rememberDatePickerState(
         selectableDates = object : SelectableDates {
@@ -29,22 +30,20 @@ fun DateInputDialog(
         }
     )
 
-    DatePickerDialog(
-        modifier = modifier,
-        onDismissRequest = { },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    datePickerState.selectedDateMillis?.let {
-                        onDateSelected(it)
-                    }
-                },
-                enabled = datePickerState.selectedDateMillis != null
-            ) {
-                Text("OK")
-            }
-        }
-    ) {
-        DatePicker(state = datePickerState)
+    LaunchedEffect(datePickerState.selectedDateMillis) {
+        onDateSelected(datePickerState.selectedDateMillis)
     }
+
+    DatePicker(
+        modifier = modifier,
+        state = datePickerState,
+        colors = DatePickerDefaults.colors(containerColor = Color.Gray),
+        title = { }
+    )
+}
+
+@Preview
+@Composable
+fun DateInputDialogPreview() {
+    DateInput { }
 }

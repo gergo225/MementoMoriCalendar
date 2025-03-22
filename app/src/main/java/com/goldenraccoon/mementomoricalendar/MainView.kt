@@ -30,7 +30,7 @@ fun MainView() {
         ) {
             composable(route = AppRoutes.Birthday.name) {
                 BirthdayPage(
-                    onWeeksGridButtonClicked = {
+                    onContinueClicked = {
                         navController.navigate(AppRoutes.TotalWeeksGrid.name)
                     }
                 )
