@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.goldenraccoon.mementomoricalendar.ui.viewmodels.WeeksGridViewModel
@@ -34,14 +36,24 @@ fun WeeksGridContent(
     modifier: Modifier = Modifier,
     elapsedWeeks: Int
 ) {
-    val totalYears = 82 // TODO: change it to be able to use custom value
+    val totalYears = 182 // TODO: change it to be able to use custom value
     val totalWeeks = totalYears * Constants.WEEKS_IN_A_YEAR
     val remainingWeeks = totalWeeks - elapsedWeeks
 
     Column(verticalArrangement = Arrangement.SpaceBetween) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            text = "Memento Mori".uppercase(),
+            textAlign = TextAlign.Center,
+            fontSize = TextUnit(18F, TextUnitType.Sp),
+        )
+
         WeeksGrid(
             modifier = modifier
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .weight(1F),
             filledCellCount = elapsedWeeks,
             totalYears = totalYears
         )
