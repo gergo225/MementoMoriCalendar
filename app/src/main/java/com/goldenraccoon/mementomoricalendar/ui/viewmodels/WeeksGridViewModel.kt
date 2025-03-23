@@ -27,4 +27,7 @@ class WeeksGridViewModel @Inject constructor(
             elapsedWeeks.toInt()
         }
         .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = 0)
+
+    val shouldShowBirthdayPage = userSettingsRepository.isBirthdaySet.map { !it }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }

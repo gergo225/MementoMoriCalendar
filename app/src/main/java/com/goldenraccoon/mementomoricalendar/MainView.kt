@@ -23,7 +23,7 @@ fun MainView() {
 
         NavHost(
             navController = navController,
-            startDestination = AppRoutes.Birthday.name,
+            startDestination = AppRoutes.TotalWeeksGrid.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -37,7 +37,11 @@ fun MainView() {
             }
 
             composable(route = AppRoutes.TotalWeeksGrid.name) {
-                WeeksGridPage()
+                WeeksGridPage(
+                    onNavigateToBirthdayPage = {
+                        navController.navigate(AppRoutes.Birthday.name)
+                    }
+                )
             }
         }
     }

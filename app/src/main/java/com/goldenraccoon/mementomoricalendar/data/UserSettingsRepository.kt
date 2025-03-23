@@ -6,6 +6,7 @@ import androidx.datastore.core.IOException
 import com.goldenraccoon.mementomoricalendar.proto.UserSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,6 +24,8 @@ class UserSettingsRepository @Inject constructor(
                 throw exception
             }
         }
+
+    val isBirthdaySet: Flow<Boolean> = userSettingsFlow.map { it.birthdayMillis != 0L }
 
     suspend fun setBirthdayMillis(birthdayMillis: Long) {
         userSettingsStore.updateData { currentSettings ->

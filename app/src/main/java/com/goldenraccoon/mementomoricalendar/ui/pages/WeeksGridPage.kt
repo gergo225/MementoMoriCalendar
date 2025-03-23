@@ -8,8 +8,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,11 +24,21 @@ import com.goldenraccoon.mementomoricalendar.util.Constants
 @Composable
 fun WeeksGridPage(
     modifier: Modifier = Modifier,
-    viewModel: WeeksGridViewModel = hiltViewModel()
+    viewModel: WeeksGridViewModel = hiltViewModel(),
+    onNavigateToBirthdayPage: () -> Unit
 ) {
     val elapsedWeeks by viewModel.elapsedWeeks.collectAsState()
+    val shouldShowBirthdayPage by viewModel.shouldShowBirthdayPage.collectAsState()
 
-    WeeksGridContent(modifier = modifier, elapsedWeeks = elapsedWeeks)
+    LaunchedEffect(shouldShowBirthdayPage) {
+        if (shouldShowBirthdayPage == true) {
+            onNavigateToBirthdayPage()
+        }
+    }
+
+    if (shouldShowBirthdayPage == false) {
+        WeeksGridContent(modifier = modifier, elapsedWeeks = elapsedWeeks)
+    }
 }
 
 @Composable
