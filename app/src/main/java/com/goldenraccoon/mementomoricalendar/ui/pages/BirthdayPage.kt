@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,45 +44,84 @@ fun BirthdayPage(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+        BirthdayPageContent(
+            selectedDateMillis = selectedDateMillis,
+            onDateSelected = { dateMillis ->
+                selectedDateMillis = dateMillis
+            },
+            onContinueClicked = {
+                val birthdayMillis = selectedDateMillis ?: return@BirthdayPageContent
+                viewModel.setBirthday(birthdayMillis)
+                onContinueClicked()
+            }
+        )
+    }
+}
+
+@Composable
+fun BirthdayPageContent(
+    modifier: Modifier = Modifier,
+    selectedDateMillis: Long?,
+    onDateSelected: (Long?) -> Unit,
+    onContinueClicked: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+    ) {
+        Text(
+            "Choose your birthday",
+            modifier = Modifier.padding(top = 24.dp),
+            fontSize = 24.sp
+        )
+
+        DateInput(
+            modifier = Modifier.weight(1F),
+            onDateSelected = onDateSelected
+        )
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            onClick = {
+                onContinueClicked()
+            },
+            enabled = selectedDateMillis != null
         ) {
-            Text(
-                "Choose your birthday",
-                modifier = Modifier.padding(top = 24.dp),
-                fontSize = 24.sp
-            )
-
-            DateInput(
-                modifier = Modifier.weight(1F),
-                onDateSelected = { dateMillis ->
-                    selectedDateMillis = dateMillis
-                }
-            )
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                onClick = {
-                    val birthdayMillis = selectedDateMillis ?: return@Button
-                    viewModel.setBirthday(birthdayMillis)
-                    onContinueClicked()
-                },
-                enabled = selectedDateMillis != null
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Continue")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                        contentDescription = "Arrow pointing to the right"
-                    )
-                }
+                Text("Continue")
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowForward,
+                    contentDescription = "Arrow pointing to the right"
+                )
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun BirthdayPageContentPreview() {
+    BirthdayPageContent(
+        modifier = Modifier.fillMaxSize().background(Color.White),
+        selectedDateMillis = 1742842572831,
+        onDateSelected = { },
+        onContinueClicked = {}
+    )
+}
+
+@Preview
+@Composable
+fun BirthdayPageContentPreviewEmpty() {
+    BirthdayPageContent(
+        modifier = Modifier.fillMaxSize(),
+        selectedDateMillis = null,
+        onDateSelected = { },
+        onContinueClicked = {}
+    )
 }
