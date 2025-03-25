@@ -40,6 +40,12 @@ fun MainView() {
                 WeeksGridPage(
                     onNavigateToBirthdayPage = {
                         navController.navigate(AppRoutes.Birthday.name)
+                    },
+                    onNavigateToSettingsPage = {
+                        // TODO: navigate to settings page
+                    },
+                    onNavigateToStatisticsPage = {
+                        // TODO: navigate to statistics page
                     }
                 )
             }
