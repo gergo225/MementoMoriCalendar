@@ -24,12 +24,22 @@ class SettingsViewModel @Inject constructor(
         private set
 
     fun onLifeExpectancyInputChange(newValue: String) {
-        // TODO: validate life expectancy input
+        val hasInput = newValue.isNotEmpty()
+        if (hasInput && !isValidLifeExpectancy(newValue)) {
+            return
+        }
+
         lifeExpectancyInput = newValue
     }
 
     fun saveSettings() {
         updateLifeExpectancy()
+    }
+
+    private fun isValidLifeExpectancy(value: String): Boolean {
+        val intValue = value.toIntOrNull()
+        val isGreaterThanZero = intValue != null && intValue > 0
+        return isGreaterThanZero
     }
 
     private fun updateLifeExpectancy() {
