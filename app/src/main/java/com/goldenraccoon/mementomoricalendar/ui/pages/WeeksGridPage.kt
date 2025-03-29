@@ -28,6 +28,7 @@ import com.goldenraccoon.mementomoricalendar.R
 import com.goldenraccoon.mementomoricalendar.ui.viewmodels.WeeksGridViewModel
 import com.goldenraccoon.mementomoricalendar.ui.views.WeeksGrid
 import com.goldenraccoon.mementomoricalendar.util.Constants
+import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
 
 @Composable
 fun WeeksGridPage(
@@ -38,6 +39,7 @@ fun WeeksGridPage(
     onNavigateToStatisticsPage: () -> Unit = {}
 ) {
     val elapsedWeeks by viewModel.elapsedWeeks.collectAsState()
+    val lifeExpectancyYears by viewModel.lifeExpectancyYears.collectAsState()
     val shouldShowBirthdayPage by viewModel.shouldShowBirthdayPage.collectAsState()
 
     LaunchedEffect(shouldShowBirthdayPage) {
@@ -50,6 +52,7 @@ fun WeeksGridPage(
         WeeksGridContent(
             modifier = modifier,
             elapsedWeeks = elapsedWeeks,
+            totalYears = lifeExpectancyYears,
             onSettingsClicked = onNavigateToSettingsPage,
             onStatisticsClicked = onNavigateToStatisticsPage
         )
@@ -60,10 +63,10 @@ fun WeeksGridPage(
 fun WeeksGridContent(
     modifier: Modifier = Modifier,
     elapsedWeeks: Int,
+    totalYears: Int = DEFAULT_LIFE_EXPECTANCY_YEARS,
     onSettingsClicked: () -> Unit = {},
     onStatisticsClicked: () -> Unit = {}
 ) {
-    val totalYears = 182 // TODO: change it to be able to use custom value
     val totalWeeks = totalYears * Constants.WEEKS_IN_A_YEAR
     val remainingWeeks = totalWeeks - elapsedWeeks
 

@@ -3,6 +3,7 @@ package com.goldenraccoon.mementomoricalendar.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
+import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -27,6 +28,9 @@ class WeeksGridViewModel @Inject constructor(
             elapsedWeeks.toInt()
         }
         .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = 0)
+
+    val lifeExpectancyYears = userSettingsRepository.lifeExpectancyYears
+        .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = DEFAULT_LIFE_EXPECTANCY_YEARS)
 
     val shouldShowBirthdayPage = userSettingsRepository.isBirthdaySet.map { !it }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)

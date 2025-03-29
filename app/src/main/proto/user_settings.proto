@@ -5,4 +5,5 @@ option java_multiple_files = true;
 
 message UserSettings {
   uint64 birthday_millis = 1;
+  uint32 life_expectancy_years = 2;
 }
