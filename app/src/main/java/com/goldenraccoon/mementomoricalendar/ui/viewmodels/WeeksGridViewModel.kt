@@ -16,10 +16,9 @@ import javax.inject.Inject
 class WeeksGridViewModel @Inject constructor(
     userSettingsRepository: UserSettingsRepository
 ) : ViewModel() {
-    val elapsedWeeks = userSettingsRepository.userSettingsFlow
-        .map {
+    val elapsedWeeks = userSettingsRepository.birthdayMillis
+        .map { birthday ->
             val currentMillis = Date().time
-            val birthday = it.birthdayMillis
             val elapsedMillis = currentMillis - birthday
 
             val elapsedDays = TimeUnit.MILLISECONDS.toDays(elapsedMillis)

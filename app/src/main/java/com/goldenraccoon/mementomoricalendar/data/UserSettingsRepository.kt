@@ -28,6 +28,11 @@ class UserSettingsRepository @Inject constructor(
 
     val isBirthdaySet: Flow<Boolean> = userSettingsFlow.map { it.birthdayMillis != 0L }
 
+    val birthdayMillis: Flow<Long> = userSettingsFlow
+        .map {
+            it.birthdayMillis
+        }
+
     suspend fun setBirthdayMillis(birthdayMillis: Long) {
         userSettingsStore.updateData { currentSettings ->
             currentSettings.toBuilder()

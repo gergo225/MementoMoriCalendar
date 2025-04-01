@@ -19,8 +19,12 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
     var lifeExpectancyYears = userSettingsRepository.lifeExpectancyYears
         .stateIn(viewModelScope, SharingStarted.Eagerly, DEFAULT_LIFE_EXPECTANCY_YEARS)
+    var initialBirthdayMillis = userSettingsRepository.birthdayMillis
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     var lifeExpectancyInput by mutableStateOf("")
+        private set
+    var birthdayMillisInput by mutableStateOf<Long?>(null)
         private set
 
     fun onLifeExpectancyInputChange(newValue: String) {
@@ -32,8 +36,21 @@ class SettingsViewModel @Inject constructor(
         lifeExpectancyInput = newValue
     }
 
+    fun onBirthdayInputChange(newValue: Long?) {
+        val isValid = newValue != null && newValue > 0 && newValue < System.currentTimeMillis()
+        if (!isValid) {
+            return
+        }
+
+        birthdayMillisInput = newValue
+    }
+
     fun saveSettings() {
-        updateLifeExpectancy()
+        // TODO: save only changed values
+        viewModelScope.launch {
+            updateLifeExpectancy()
+            updateBirthday()
+        }
     }
 
     private fun isValidLifeExpectancy(value: String): Boolean {
@@ -42,11 +59,15 @@ class SettingsViewModel @Inject constructor(
         return isGreaterThanZero
     }
 
-    private fun updateLifeExpectancy() {
+    private suspend fun updateLifeExpectancy() {
         lifeExpectancyInput.toIntOrNull()?.let {
-            viewModelScope.launch {
-                userSettingsRepository.setLifeExpectancyYears(it)
-            }
+            userSettingsRepository.setLifeExpectancyYears(it)
+        }
+    }
+
+    private suspend fun updateBirthday() {
+        birthdayMillisInput?.let {
+            userSettingsRepository.setBirthdayMillis(it)
         }
     }
 }
