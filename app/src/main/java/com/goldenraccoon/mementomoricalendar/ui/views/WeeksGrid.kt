@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
 import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_A_QUARTER
 import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_A_YEAR
 
@@ -29,13 +31,14 @@ fun WeeksGrid(
     groupSeparatorSize: Dp = 8.dp,
     totalYears: Int,
     filledCellCount: Int,
-    filledCellColor: Color = Color.Black,
-    emptyCellColor: Color = Color.Black.copy(alpha = 0.4f)
+    filledCellColor: Color = MaterialTheme.colorScheme.primary,
+    emptyCellColor: Color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5F)
 ) {
     val wholeUnits = totalYears / yearsInUnit
     Column(
         verticalArrangement = Arrangement.spacedBy(groupSeparatorSize),
         modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
     ) {
         (0..<wholeUnits).forEach { unit ->
             val filledCount = (filledCellCount - unit * yearsInUnit * WEEKS_IN_A_YEAR)
@@ -98,7 +101,8 @@ private fun WeeksGridUnit(
                     .width(horizontalPadding)
                     .align(Alignment.CenterStart)
                     .offset(x = -horizontalPadding),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -124,7 +128,8 @@ private fun WeeksGridRow(
             )
 
             if (week % WEEKS_IN_A_QUARTER == WEEKS_IN_A_QUARTER - 1 && week != WEEKS_IN_A_YEAR - 1) {
-                val separatorSize = if (week == WEEKS_IN_A_YEAR / 2 - 1) middleSeparatorSize else quarterSeparatorSize
+                val separatorSize =
+                    if (week == WEEKS_IN_A_YEAR / 2 - 1) middleSeparatorSize else quarterSeparatorSize
                 Spacer(modifier = Modifier.width(separatorSize))
             }
         }
@@ -134,9 +139,11 @@ private fun WeeksGridRow(
 @Preview(showSystemUi = true, device = "id:Nexus 5X")
 @Composable
 private fun WeeksGridPreview() {
-    WeeksGrid(
-        yearsInUnit = 5,
-        totalYears = 82,
-        filledCellCount = 1698
-    )
+    MementoMoriCalendarTheme(darkTheme = false) {
+        WeeksGrid(
+            yearsInUnit = 5,
+            totalYears = 82,
+            filledCellCount = 1698
+        )
+    }
 }
