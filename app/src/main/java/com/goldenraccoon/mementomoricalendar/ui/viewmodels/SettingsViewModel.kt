@@ -1,5 +1,6 @@
 package com.goldenraccoon.mementomoricalendar.ui.viewmodels
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,6 +23,14 @@ class SettingsViewModel @Inject constructor(
     var initialBirthdayMillis = userSettingsRepository.birthdayMillis
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
+    val isSaveEnabled by derivedStateOf {
+        val lifeExpectancyChanged = lifeExpectancyInput.toIntOrNull() != lifeExpectancyYears.value
+        val birthdayChanged = birthdayMillisInput != initialBirthdayMillis.value
+
+        (isValidLifeExpectancy(lifeExpectancyInput) && lifeExpectancyChanged)
+                || (isValidBirthday(birthdayMillisInput) && birthdayChanged)
+    }
+
     var lifeExpectancyInput by mutableStateOf("")
         private set
     var birthdayMillisInput by mutableStateOf<Long?>(null)
@@ -37,8 +46,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onBirthdayInputChange(newValue: Long?) {
-        val isValid = newValue != null && newValue > 0 && newValue < System.currentTimeMillis()
-        if (!isValid) {
+        if (!isValidBirthday(newValue)) {
             return
         }
 
@@ -46,10 +54,9 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun saveSettings() {
-        // TODO: save only changed values
         viewModelScope.launch {
-            updateLifeExpectancy()
-            updateBirthday()
+            updateLifeExpectancyIfNeeded()
+            updateBirthdayIfNeeded()
         }
     }
 
@@ -59,13 +66,23 @@ class SettingsViewModel @Inject constructor(
         return isGreaterThanZero
     }
 
-    private suspend fun updateLifeExpectancy() {
+    private fun isValidBirthday(value: Long?): Boolean {
+        val isPastDate = value != null && value < System.currentTimeMillis()
+        val isExistingDate = (value ?: 0) > 0
+        return isPastDate && isExistingDate
+    }
+
+    private suspend fun updateLifeExpectancyIfNeeded() {
+        if (lifeExpectancyInput.toIntOrNull() == lifeExpectancyYears.value) { return }
+
         lifeExpectancyInput.toIntOrNull()?.let {
             userSettingsRepository.setLifeExpectancyYears(it)
         }
     }
 
-    private suspend fun updateBirthday() {
+    private suspend fun updateBirthdayIfNeeded() {
+        if (birthdayMillisInput == initialBirthdayMillis.value) { return }
+
         birthdayMillisInput?.let {
             userSettingsRepository.setBirthdayMillis(it)
         }

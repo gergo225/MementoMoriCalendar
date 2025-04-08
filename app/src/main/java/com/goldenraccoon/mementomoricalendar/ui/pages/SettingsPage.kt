@@ -74,7 +74,8 @@ fun SettingsPage(
         onSaveClick = {
             viewModel.saveSettings()
             onNavigateBack()
-        }
+        },
+        isSaveEnabled = viewModel.isSaveEnabled
     )
 }
 
@@ -87,7 +88,8 @@ fun SettingsPageContent(
     birthdayMillis: Long?,
     onLifeExpectancyChange: (String) -> Unit,
     onBirthdayChange: (Long?) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isSaveEnabled: Boolean = true
 ) {
     var showDatePickerModal by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
@@ -140,7 +142,8 @@ fun SettingsPageContent(
 
         Button(
             onClick = onSaveClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isSaveEnabled
         ) {
             Text("Save")
         }
