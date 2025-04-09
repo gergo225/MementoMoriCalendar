@@ -16,12 +16,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.goldenraccoon.mementomoricalendar.ui.pages.BirthdayPage
 import com.goldenraccoon.mementomoricalendar.ui.pages.SettingsPage
+import com.goldenraccoon.mementomoricalendar.ui.pages.StatisticsPage
 import com.goldenraccoon.mementomoricalendar.ui.pages.WeeksGridPage
 
 enum class AppRoutes() {
     Birthday,
     TotalWeeksGrid,
-    Settings
+    Settings,
+    Statistics
 }
 
 @Composable
@@ -61,7 +63,7 @@ fun MainView() {
                         navController.navigate(AppRoutes.Settings.name)
                     },
                     onNavigateToStatisticsPage = {
-                        // TODO: navigate to statistics page
+                        navController.navigate(AppRoutes.Statistics.name)
                     }
                 )
             }
@@ -86,6 +88,24 @@ fun MainView() {
                         navController.popBackStack()
                     }
                 )
+            }
+
+            composable(
+                route = AppRoutes.Statistics.name,
+                enterTransition = {
+                    slideIntoContainer(
+                        animationSpec = tween(300, easing = EaseIn),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        animationSpec = tween(500, easing = EaseOut),
+                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    )
+                }
+            ) {
+                StatisticsPage()
             }
         }
     }
