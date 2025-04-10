@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +22,17 @@ fun StatisticsPage(
 ) {
     val percentageLived by viewModel.percentageLived.collectAsStateWithLifecycle()
 
+    StatisticsPageContent(
+        modifier = modifier,
+        percentageLived = percentageLived
+    )
+}
+
+@Composable
+fun StatisticsPageContent(
+    modifier: Modifier = Modifier,
+    percentageLived: Int
+) {
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -34,4 +46,13 @@ fun StatisticsPage(
 
         Text("Lived: $percentageLived%")
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun StatisticsPageContentPreview() {
+    StatisticsPageContent(
+        modifier = Modifier.fillMaxSize(),
+        percentageLived = 38
+    )
 }

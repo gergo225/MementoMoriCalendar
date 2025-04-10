@@ -23,5 +23,5 @@ class StatisticsViewModel @Inject constructor(
             val percentage = millisLived.toDouble() / millisTotal
             (percentage * 100).roundToInt()
         }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, 0.0)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 }
