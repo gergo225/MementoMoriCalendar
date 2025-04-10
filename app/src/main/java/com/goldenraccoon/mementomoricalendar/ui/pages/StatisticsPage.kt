@@ -3,6 +3,8 @@ package com.goldenraccoon.mementomoricalendar.ui.pages
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.goldenraccoon.mementomoricalendar.ui.viewmodels.StatisticsViewModel
+import com.goldenraccoon.mementomoricalendar.ui.views.CustomCircularProgress
 
 @Composable
 fun StatisticsPage(
@@ -41,10 +44,15 @@ fun StatisticsPageContent(
     ) {
         Text(
             text = "Your life",
-            fontSize = 24.sp
+            fontSize = 24.sp,
+            modifier = Modifier.padding(bottom = 24.dp)
         )
 
-        Text("Lived: $percentageLived%")
+        CustomCircularProgress(
+            modifier = Modifier.height(250.dp),
+            text = "Lived: $percentageLived%",
+            progress = percentageLived / 100F
+        )
     }
 }
 
