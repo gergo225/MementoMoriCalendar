@@ -32,8 +32,8 @@ fun CustomCircularProgress(
             progress = { progress },
             strokeWidth = strokeWidth,
             gapSize = (-24).dp,
-            trackColor = MaterialTheme.colorScheme.onTertiary,
-            color = MaterialTheme.colorScheme.tertiary
+            trackColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3F),
+            color = MaterialTheme.colorScheme.primary
         )
 
         Text(
