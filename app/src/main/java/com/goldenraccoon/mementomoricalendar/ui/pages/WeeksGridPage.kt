@@ -67,7 +67,7 @@ fun WeeksGridContent(
     onSettingsClicked: () -> Unit = {},
     onStatisticsClicked: () -> Unit = {}
 ) {
-    val totalWeeks = totalYears * Constants.WEEKS_IN_A_YEAR
+    val totalWeeks = totalYears * Constants.WEEKS_IN_YEAR
     val remainingWeeks = totalWeeks - elapsedWeeks
 
     Column(verticalArrangement = Arrangement.SpaceBetween) {

@@ -1,6 +1,7 @@
 package com.goldenraccoon.mementomoricalendar.ui.pages
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -24,17 +25,26 @@ fun StatisticsPage(
     viewModel: StatisticsViewModel = hiltViewModel()
 ) {
     val percentageLived by viewModel.percentageLived.collectAsStateWithLifecycle()
+    val percentageOfDayPassed by viewModel.percentageOfDayPassed.collectAsStateWithLifecycle()
+    val percentageOfWeekPassed by viewModel.percentageOfWeekPassed.collectAsStateWithLifecycle()
+    val percentageOfMonthPassed by viewModel.percentageOfMonthPassed.collectAsStateWithLifecycle()
 
     StatisticsPageContent(
         modifier = modifier,
-        percentageLived = percentageLived
+        percentageLived = percentageLived,
+        percentageOfDay = percentageOfDayPassed,
+        percentageOfWeek = percentageOfWeekPassed,
+        percentageOfMonth = percentageOfMonthPassed
     )
 }
 
 @Composable
 fun StatisticsPageContent(
     modifier: Modifier = Modifier,
-    percentageLived: Int
+    percentageLived: Int,
+    percentageOfDay: Int,
+    percentageOfWeek: Int,
+    percentageOfMonth: Int
 ) {
     Column(
         modifier = modifier
@@ -53,7 +63,45 @@ fun StatisticsPageContent(
             text = "Lived: $percentageLived%",
             progress = percentageLived / 100F
         )
+
+        Row(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            SmallCircularProgress(
+                modifier = Modifier.weight(1F),
+                name = "Day",
+                percentage = percentageOfDay
+            )
+            SmallCircularProgress(
+                modifier = Modifier.weight(1F),
+                name = "Week",
+                percentage = percentageOfWeek
+            )
+            SmallCircularProgress(
+                modifier = Modifier.weight(1F),
+                name = "Month",
+                percentage = percentageOfMonth
+            )
+        }
     }
+}
+
+@Composable
+private fun SmallCircularProgress(
+    modifier: Modifier = Modifier,
+    name: String,
+    percentage: Int
+) {
+    CustomCircularProgress(
+        modifier = modifier
+            .height(150.dp),
+        text = "$name\n$percentage%",
+        progress = percentage / 100F,
+        strokeWidth = 18.dp
+    )
 }
 
 @Preview(showSystemUi = true)
@@ -61,6 +109,9 @@ fun StatisticsPageContent(
 fun StatisticsPageContentPreview() {
     StatisticsPageContent(
         modifier = Modifier.fillMaxSize(),
-        percentageLived = 38
+        percentageLived = 38,
+        percentageOfWeek = 21,
+        percentageOfDay = 79,
+        percentageOfMonth = 53
     )
 }

@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
 
@@ -19,7 +20,8 @@ import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
 fun CustomCircularProgress(
     modifier: Modifier = Modifier,
     progress: Float,
-    text: String
+    text: String,
+    strokeWidth: Dp = 24.dp
 ) {
     Box(
         modifier = modifier.aspectRatio(1F),
@@ -28,7 +30,7 @@ fun CustomCircularProgress(
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             progress = { progress },
-            strokeWidth = 24.dp,
+            strokeWidth = strokeWidth,
             gapSize = (-24).dp,
             trackColor = MaterialTheme.colorScheme.onTertiary,
             color = MaterialTheme.colorScheme.tertiary

@@ -21,8 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
-import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_A_QUARTER
-import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_A_YEAR
+import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_QUARTER
+import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_YEAR
 
 @Composable
 fun WeeksGrid(
@@ -41,8 +41,8 @@ fun WeeksGrid(
             .background(MaterialTheme.colorScheme.background)
     ) {
         (0..<wholeUnits).forEach { unit ->
-            val filledCount = (filledCellCount - unit * yearsInUnit * WEEKS_IN_A_YEAR)
-                .coerceIn(0, yearsInUnit * WEEKS_IN_A_YEAR)
+            val filledCount = (filledCellCount - unit * yearsInUnit * WEEKS_IN_YEAR)
+                .coerceIn(0, yearsInUnit * WEEKS_IN_YEAR)
             WeeksGridUnit(
                 yearsInUnit = yearsInUnit,
                 label = ((unit + 1) * yearsInUnit).toString(),
@@ -54,8 +54,8 @@ fun WeeksGrid(
 
         val remainingYears = totalYears.mod(yearsInUnit)
         if (remainingYears > 0) {
-            val filledCount = (filledCellCount - (totalYears - remainingYears) * WEEKS_IN_A_YEAR)
-                .coerceIn(0, yearsInUnit * WEEKS_IN_A_YEAR)
+            val filledCount = (filledCellCount - (totalYears - remainingYears) * WEEKS_IN_YEAR)
+                .coerceIn(0, yearsInUnit * WEEKS_IN_YEAR)
             WeeksGridUnit(
                 yearsInUnit = remainingYears,
                 filledCellCount = filledCount,
@@ -84,8 +84,8 @@ private fun WeeksGridUnit(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             (0..<yearsInUnit).forEach { year ->
-                val filledCount = (filledCellCount - year * WEEKS_IN_A_YEAR)
-                    .coerceIn(0, WEEKS_IN_A_YEAR)
+                val filledCount = (filledCellCount - year * WEEKS_IN_YEAR)
+                    .coerceIn(0, WEEKS_IN_YEAR)
                 WeeksGridRow(
                     filledCellCount = filledCount,
                     filledCellColor = filledCellColor,
@@ -119,7 +119,7 @@ private fun WeeksGridRow(
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        (0..<WEEKS_IN_A_YEAR).forEach { week ->
+        (0..<WEEKS_IN_YEAR).forEach { week ->
             Spacer(
                 modifier = Modifier
                     .weight(1F)
@@ -127,9 +127,9 @@ private fun WeeksGridRow(
                     .background(if (week < filledCellCount) filledCellColor else emptyCellColor)
             )
 
-            if (week % WEEKS_IN_A_QUARTER == WEEKS_IN_A_QUARTER - 1 && week != WEEKS_IN_A_YEAR - 1) {
+            if (week % WEEKS_IN_QUARTER == WEEKS_IN_QUARTER - 1 && week != WEEKS_IN_YEAR - 1) {
                 val separatorSize =
-                    if (week == WEEKS_IN_A_YEAR / 2 - 1) middleSeparatorSize else quarterSeparatorSize
+                    if (week == WEEKS_IN_YEAR / 2 - 1) middleSeparatorSize else quarterSeparatorSize
                 Spacer(modifier = Modifier.width(separatorSize))
             }
         }
