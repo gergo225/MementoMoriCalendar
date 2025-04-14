@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,8 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
 import com.goldenraccoon.mementomoricalendar.ui.viewmodels.StatisticsViewModel
 import com.goldenraccoon.mementomoricalendar.ui.views.CustomCircularProgress
+import com.goldenraccoon.mementomoricalendar.ui.views.StatItem
+import com.goldenraccoon.mementomoricalendar.ui.views.StatsRowModel
 
 @Composable
 fun StatisticsPage(
@@ -48,7 +52,8 @@ fun StatisticsPageContent(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -64,27 +69,34 @@ fun StatisticsPageContent(
             progress = percentageLived / 100F
         )
 
-        Row(
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        Column(
+            modifier = Modifier.padding(top = 16.dp),
         ) {
-            SmallCircularProgress(
-                modifier = Modifier.weight(1F),
-                name = "Day",
-                percentage = percentageOfDay
+            Text(
+                text = "Current",
+                modifier = Modifier.padding(start = 8.dp),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.secondary
             )
-            SmallCircularProgress(
-                modifier = Modifier.weight(1F),
-                name = "Week",
-                percentage = percentageOfWeek
-            )
-            SmallCircularProgress(
-                modifier = Modifier.weight(1F),
-                name = "Month",
-                percentage = percentageOfMonth
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                SmallCircularProgress(
+                    modifier = Modifier.weight(1F),
+                    name = "Day",
+                    percentage = percentageOfDay
+                )
+                SmallCircularProgress(
+                    modifier = Modifier.weight(1F),
+                    name = "Week",
+                    percentage = percentageOfWeek
+                )
+                SmallCircularProgress(
+                    modifier = Modifier.weight(1F),
+                    name = "Month",
+                    percentage = percentageOfMonth
+                )
+            }
         }
     }
 }
