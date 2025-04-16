@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
+import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -58,13 +59,6 @@ class SettingsViewModel @Inject constructor(
             updateLifeExpectancyIfNeeded()
             updateBirthdayIfNeeded()
         }
-    }
-
-    // TODO: extract into a validator
-    private fun isValidLifeExpectancy(value: String): Boolean {
-        val intValue = value.toIntOrNull()
-        val isGreaterThanZero = intValue != null && intValue > 0
-        return isGreaterThanZero
     }
 
     private fun isValidBirthday(value: Long?): Boolean {

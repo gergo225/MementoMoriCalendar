@@ -2,17 +2,13 @@ package com.goldenraccoon.mementomoricalendar.ui.views.setup
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,26 +53,13 @@ fun LifeExpectancySetupContent(
 
         Spacer(modifier = Modifier.weight(1F))
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            onClick = {
-                onFinishClicked()
-            },
-            enabled = isButtonEnabled
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Finish")
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    imageVector = Icons.Filled.Check,
-                    contentDescription = "Check icon"
-                )
-            }
-        }
+        SetupPageSubmitButton(
+            onClick = onFinishClicked,
+            isEnabled = isButtonEnabled,
+            text = "Finish",
+            icon = Icons.Filled.Check,
+            iconDescription = "Check icon"
+        )
     }
 }
 
