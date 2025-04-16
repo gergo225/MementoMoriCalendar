@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.goldenraccoon.mementomoricalendar.ui.pages.BirthdayPage
+import com.goldenraccoon.mementomoricalendar.ui.pages.SetupPage
 import com.goldenraccoon.mementomoricalendar.ui.pages.SettingsPage
 import com.goldenraccoon.mementomoricalendar.ui.pages.StatisticsPage
 import com.goldenraccoon.mementomoricalendar.ui.pages.WeeksGridPage
@@ -39,8 +39,8 @@ fun MainView() {
                 .padding(innerPadding)
         ) {
             composable(route = AppRoutes.Birthday.name) {
-                BirthdayPage(
-                    onContinueClicked = {
+                SetupPage(
+                    onFinishClicked = {
                         navController.navigate(AppRoutes.TotalWeeksGrid.name)
                     }
                 )
@@ -56,7 +56,7 @@ fun MainView() {
                 }
             ) {
                 WeeksGridPage(
-                    onNavigateToBirthdayPage = {
+                    onNavigateToSetupPage = {
                         navController.navigate(AppRoutes.Birthday.name)
                     },
                     onNavigateToSettingsPage = {

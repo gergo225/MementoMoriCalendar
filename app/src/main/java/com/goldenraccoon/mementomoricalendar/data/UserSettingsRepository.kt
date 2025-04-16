@@ -29,9 +29,7 @@ class UserSettingsRepository @Inject constructor(
     val isBirthdaySet: Flow<Boolean> = userSettingsFlow.map { it.birthdayMillis != 0L }
 
     val birthdayMillis: Flow<Long> = userSettingsFlow
-        .map {
-            it.birthdayMillis
-        }
+        .map { it.birthdayMillis }
 
     suspend fun setBirthdayMillis(birthdayMillis: Long) {
         userSettingsStore.updateData { currentSettings ->
@@ -41,12 +39,14 @@ class UserSettingsRepository @Inject constructor(
         }
     }
 
+    val isLifeExpectancySet: Flow<Boolean> = userSettingsFlow.map { it.lifeExpectancyYears != 0 }
+
     val lifeExpectancyYears: Flow<Int> = userSettingsFlow
         .map {
             if (it.lifeExpectancyYears == 0) {
-                DEFAULT_LIFE_EXPECTANCY_YEARS
+                return@map DEFAULT_LIFE_EXPECTANCY_YEARS
             } else {
-                it.lifeExpectancyYears
+                return@map it.lifeExpectancyYears
             }
         }
 

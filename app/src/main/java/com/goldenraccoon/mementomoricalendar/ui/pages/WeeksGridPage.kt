@@ -34,21 +34,21 @@ import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTA
 fun WeeksGridPage(
     modifier: Modifier = Modifier,
     viewModel: WeeksGridViewModel = hiltViewModel(),
-    onNavigateToBirthdayPage: () -> Unit,
+    onNavigateToSetupPage: () -> Unit,
     onNavigateToSettingsPage: () -> Unit = {},
     onNavigateToStatisticsPage: () -> Unit = {}
 ) {
     val elapsedWeeks by viewModel.elapsedWeeks.collectAsState()
     val lifeExpectancyYears by viewModel.lifeExpectancyYears.collectAsState()
-    val shouldShowBirthdayPage by viewModel.shouldShowBirthdayPage.collectAsState()
+    val shouldShowSetupPage by viewModel.shouldShowSetupPage.collectAsState()
 
-    LaunchedEffect(shouldShowBirthdayPage) {
-        if (shouldShowBirthdayPage == true) {
-            onNavigateToBirthdayPage()
+    LaunchedEffect(shouldShowSetupPage) {
+        if (shouldShowSetupPage == true) {
+            onNavigateToSetupPage()
         }
     }
 
-    if (shouldShowBirthdayPage == false) {
+    if (shouldShowSetupPage == false) {
         WeeksGridContent(
             modifier = modifier,
             elapsedWeeks = elapsedWeeks,

@@ -60,6 +60,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    // TODO: extract into a validator
     private fun isValidLifeExpectancy(value: String): Boolean {
         val intValue = value.toIntOrNull()
         val isGreaterThanZero = intValue != null && intValue > 0
