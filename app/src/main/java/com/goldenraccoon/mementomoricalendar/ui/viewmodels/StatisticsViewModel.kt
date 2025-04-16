@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants
 import com.goldenraccoon.mementomoricalendar.util.Constants.MILLIS_IN_DAY
+import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_YEAR
 import com.goldenraccoon.mementomoricalendar.util.getMillisPassedThisMonth
 import com.goldenraccoon.mementomoricalendar.util.getMillisPassedThisWeek
 import com.goldenraccoon.mementomoricalendar.util.getMillisPassedToday
@@ -69,5 +70,39 @@ class StatisticsViewModel @Inject constructor(
             delay(1000)
         }
     }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    val remainingDays = userSettingsRepository.userSettingsFlow
+        .map { settings ->
+            val millisLived = System.currentTimeMillis() - settings.birthdayMillis
+            val millisTotal = settings.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
+
+            val millisRemaining = millisTotal - millisLived
+            val daysRemaining = millisRemaining.toDouble() / MILLIS_IN_DAY
+
+            daysRemaining.toInt().coerceAtLeast(0)
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    val remainingWeeks = remainingDays.map { it / 7 }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    val remainingMonths = userSettingsRepository.userSettingsFlow
+        .map {
+            val millisTotal = it.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
+
+            val calendar = Calendar.getInstance()
+            var months = 0
+
+            while (calendar.timeInMillis < millisTotal) {
+                calendar.add(Calendar.MONTH, 1)
+                months++
+            }
+
+            months.coerceAtLeast(0)
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    val remainingYears = remainingWeeks.map { it.toDouble() / WEEKS_IN_YEAR }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 }

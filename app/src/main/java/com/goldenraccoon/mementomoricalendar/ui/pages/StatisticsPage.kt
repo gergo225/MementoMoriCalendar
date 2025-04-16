@@ -1,9 +1,12 @@
 package com.goldenraccoon.mementomoricalendar.ui.pages
 
+import android.icu.text.DecimalFormat
+import android.icu.text.DecimalFormatSymbols
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +24,9 @@ import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
 import com.goldenraccoon.mementomoricalendar.ui.viewmodels.StatisticsViewModel
 import com.goldenraccoon.mementomoricalendar.ui.views.CustomCircularProgress
 import com.goldenraccoon.mementomoricalendar.ui.views.StatItem
+import com.goldenraccoon.mementomoricalendar.ui.views.StatsRow
 import com.goldenraccoon.mementomoricalendar.ui.views.StatsRowModel
+import java.util.Locale
 
 @Composable
 fun StatisticsPage(
@@ -33,12 +38,25 @@ fun StatisticsPage(
     val percentageOfWeekPassed by viewModel.percentageOfWeekPassed.collectAsStateWithLifecycle()
     val percentageOfMonthPassed by viewModel.percentageOfMonthPassed.collectAsStateWithLifecycle()
 
+    val remainingYears by viewModel.remainingYears.collectAsStateWithLifecycle()
+    val remainingMonths by viewModel.remainingMonths.collectAsStateWithLifecycle()
+    val remainingWeeks by viewModel.remainingWeeks.collectAsStateWithLifecycle()
+    val remainingDays by viewModel.remainingDays.collectAsStateWithLifecycle()
+
     StatisticsPageContent(
         modifier = modifier,
         percentageLived = percentageLived,
         percentageOfDay = percentageOfDayPassed,
         percentageOfWeek = percentageOfWeekPassed,
-        percentageOfMonth = percentageOfMonthPassed
+        percentageOfMonth = percentageOfMonthPassed,
+        stats = StatsRowModel(
+            listOf(
+                StatItem("Years", String.format(Locale.getDefault(), "%.1f", remainingYears)),
+                StatItem("Months", "$remainingMonths"),
+                StatItem("Weeks", "$remainingWeeks"),
+                StatItem("Days", DecimalFormat("#,###", DecimalFormatSymbols(Locale.getDefault())).format(remainingDays))
+            )
+        )
     )
 }
 
@@ -48,7 +66,8 @@ fun StatisticsPageContent(
     percentageLived: Int,
     percentageOfDay: Int,
     percentageOfWeek: Int,
-    percentageOfMonth: Int
+    percentageOfMonth: Int,
+    stats: StatsRowModel
 ) {
     Column(
         modifier = modifier
@@ -72,12 +91,8 @@ fun StatisticsPageContent(
         Column(
             modifier = Modifier.padding(top = 16.dp),
         ) {
-            Text(
-                text = "Current",
-                modifier = Modifier.padding(start = 8.dp),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.secondary
-            )
+            HeaderText("Current")
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -98,7 +113,31 @@ fun StatisticsPageContent(
                 )
             }
         }
+
+        Column(
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            HeaderText("Total")
+
+            StatsRow(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                stats = stats
+            )
+        }
     }
+
+}
+
+@Composable
+private fun HeaderText(text: String) {
+    Text(
+        text = text,
+        modifier = Modifier
+            .padding(start = 8.dp, bottom = 12.dp, top = 8.dp),
+        fontSize = 24.sp,
+        color = MaterialTheme.colorScheme.secondary
+    )
 }
 
 @Composable
@@ -108,8 +147,7 @@ private fun SmallCircularProgress(
     percentage: Int
 ) {
     CustomCircularProgress(
-        modifier = modifier
-            .height(150.dp),
+        modifier = modifier,
         text = "$name\n$percentage%",
         progress = percentage / 100F,
         strokeWidth = 18.dp
@@ -119,11 +157,21 @@ private fun SmallCircularProgress(
 @Preview(showSystemUi = true)
 @Composable
 fun StatisticsPageContentPreview() {
-    StatisticsPageContent(
-        modifier = Modifier.fillMaxSize(),
-        percentageLived = 38,
-        percentageOfWeek = 21,
-        percentageOfDay = 79,
-        percentageOfMonth = 53
-    )
+    MementoMoriCalendarTheme {
+        StatisticsPageContent(
+            modifier = Modifier.fillMaxSize(),
+            percentageLived = 38,
+            percentageOfWeek = 21,
+            percentageOfDay = 79,
+            percentageOfMonth = 53,
+            stats = StatsRowModel(
+                listOf(
+                    StatItem("Years", "56.3"),
+                    StatItem("Months", "676"),
+                    StatItem("Weeks", "2704"),
+                    StatItem("Days", "18.920")
+                )
+            )
+        )
+    }
 }
