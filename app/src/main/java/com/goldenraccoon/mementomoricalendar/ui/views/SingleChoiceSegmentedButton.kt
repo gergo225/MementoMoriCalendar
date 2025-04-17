@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SingleChoiceSegmentedButton(
     modifier: Modifier = Modifier,
-    options: List<String>
+    options: List<String>,
+    onOptionSelected: (Int) -> Unit
 ) {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
@@ -30,7 +31,10 @@ fun SingleChoiceSegmentedButton(
                     index = index,
                     count = options.size
                 ),
-                onClick = { selectedIndex = index },
+                onClick = {
+                    onOptionSelected(index)
+                    selectedIndex = index
+                },
                 selected = index == selectedIndex,
                 label = { Text(label) }
             )
@@ -45,6 +49,7 @@ fun SingleChoiceSegmentedButtonPreview() {
         modifier = Modifier
             .padding(top = 50.dp)
             .padding(horizontal = 8.dp),
-        options = listOf("Lived", "Remaining")
+        options = listOf("Lived", "Remaining"),
+        onOptionSelected = { }
     )
 }
