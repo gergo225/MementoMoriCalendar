@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -19,7 +18,7 @@ class WeeksGridViewModel @Inject constructor(
 ) : ViewModel() {
     val elapsedWeeks = userSettingsRepository.birthdayMillis
         .map { birthday ->
-            val currentMillis = Date().time
+            val currentMillis = System.currentTimeMillis()
             val elapsedMillis = currentMillis - birthday
 
             val elapsedDays = TimeUnit.MILLISECONDS.toDays(elapsedMillis)

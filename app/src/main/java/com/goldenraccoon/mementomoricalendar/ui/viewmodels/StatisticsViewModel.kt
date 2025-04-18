@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants
-import com.goldenraccoon.mementomoricalendar.util.Constants.MILLIS_IN_DAY
 import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_YEAR
 import com.goldenraccoon.mementomoricalendar.util.getMillisPassedThisMonth
 import com.goldenraccoon.mementomoricalendar.util.getMillisPassedThisWeek
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -49,7 +49,7 @@ class StatisticsViewModel @Inject constructor(
             val calendar = Calendar.getInstance()
             val millisPassedToday = calendar.getMillisPassedToday()
 
-            val percentage = millisPassedToday.toDouble() / MILLIS_IN_DAY
+            val percentage = millisPassedToday.toDouble() / TimeUnit.DAYS.toMillis(1L)
             emit((percentage * 100).roundToInt())
             delay(1000)
         }
@@ -60,7 +60,7 @@ class StatisticsViewModel @Inject constructor(
         while (true) {
             val calendar = Calendar.getInstance()
             val millisPassedThisWeek = calendar.getMillisPassedThisWeek()
-            val millisInWeek = 7 * MILLIS_IN_DAY
+            val millisInWeek = TimeUnit.DAYS.toMillis(7L)
 
             val percentage = millisPassedThisWeek.toDouble() / millisInWeek
             emit((percentage * 100).roundToInt())
@@ -74,7 +74,7 @@ class StatisticsViewModel @Inject constructor(
             val calendar = Calendar.getInstance()
             val millisPassedThisMonth = calendar.getMillisPassedThisMonth()
             val lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-            val millisInMonth = lastDayOfMonth * MILLIS_IN_DAY
+            val millisInMonth = TimeUnit.DAYS.toMillis(lastDayOfMonth.toLong())
 
             val percentage = millisPassedThisMonth.toDouble() / millisInMonth
             emit((percentage * 100).roundToInt())
@@ -95,7 +95,7 @@ class StatisticsViewModel @Inject constructor(
                 }
             }
 
-            val days = millis.toDouble() / MILLIS_IN_DAY
+            val days = millis.toDouble() / TimeUnit.DAYS.toMillis(1L)
             days.toInt().coerceAtLeast(0)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
