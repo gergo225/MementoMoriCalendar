@@ -12,17 +12,28 @@ import com.goldenraccoon.mementomoricalendar.util.getMillisPassedThisWeek
 import com.goldenraccoon.mementomoricalendar.util.getMillisPassedToday
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.math.roundToInt
+
+enum class StatsRowType {
+    LIVED, REMAINING
+}
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
     userSettingsRepository: UserSettingsRepository
 ) : ViewModel() {
+    private val _statsRowType = MutableStateFlow(StatsRowType.REMAINING)
+    val statsRowType = _statsRowType.asStateFlow()
+
     val percentageLived = userSettingsRepository.userSettingsFlow
         .map {
             val millisLived = System.currentTimeMillis() - it.birthdayMillis
@@ -72,29 +83,42 @@ class StatisticsViewModel @Inject constructor(
     }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    val remainingDays = userSettingsRepository.userSettingsFlow
-        .map { settings ->
+    val statDays = userSettingsRepository.userSettingsFlow
+        .combine(statsRowType) { settings, statsRowType ->
             val millisLived = System.currentTimeMillis() - settings.birthdayMillis
-            val millisTotal = settings.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
 
-            val millisRemaining = millisTotal - millisLived
-            val daysRemaining = millisRemaining.toDouble() / MILLIS_IN_DAY
+            val millis = when (statsRowType) {
+                StatsRowType.LIVED -> millisLived
+                StatsRowType.REMAINING -> {
+                    val millisTotal = settings.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
+                    millisTotal - millisLived
+                }
+            }
 
-            daysRemaining.toInt().coerceAtLeast(0)
+            val days = millis.toDouble() / MILLIS_IN_DAY
+            days.toInt().coerceAtLeast(0)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    val remainingWeeks = remainingDays.map { it / 7 }
+    val statWeeks = statDays.map { it / 7 }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    val remainingMonths = userSettingsRepository.userSettingsFlow
-        .map {
-            val millisTotal = it.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
+    val statMonths = userSettingsRepository.userSettingsFlow
+        .combine(statsRowType) { settings, statsRowType ->
+            val millisStart = when (statsRowType) {
+                StatsRowType.LIVED -> settings.birthdayMillis
+                StatsRowType.REMAINING -> System.currentTimeMillis()
+            }
+            val millisEnd = when (statsRowType) {
+                StatsRowType.LIVED -> System.currentTimeMillis()
+                StatsRowType.REMAINING -> settings.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
+            }
 
             val calendar = Calendar.getInstance()
-            var months = 0
+            calendar.timeInMillis = millisStart
 
-            while (calendar.timeInMillis < millisTotal) {
+            var months = 0
+            while (calendar.timeInMillis < millisEnd) {
                 calendar.add(Calendar.MONTH, 1)
                 months++
             }
@@ -103,6 +127,10 @@ class StatisticsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    val remainingYears = remainingWeeks.map { it.toDouble() / WEEKS_IN_YEAR }
+    val statYears = statWeeks.map { it.toDouble() / WEEKS_IN_YEAR }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    fun onStatsRowTypeChanged(type: StatsRowType) {
+        _statsRowType.update { type }
+    }
 }

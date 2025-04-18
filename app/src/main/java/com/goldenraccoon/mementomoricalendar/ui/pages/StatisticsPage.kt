@@ -22,7 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
 import com.goldenraccoon.mementomoricalendar.ui.viewmodels.StatisticsViewModel
+import com.goldenraccoon.mementomoricalendar.ui.viewmodels.StatsRowType
 import com.goldenraccoon.mementomoricalendar.ui.views.CustomCircularProgress
+import com.goldenraccoon.mementomoricalendar.ui.views.SingleChoiceSegmentedButton
 import com.goldenraccoon.mementomoricalendar.ui.views.StatItem
 import com.goldenraccoon.mementomoricalendar.ui.views.StatsRow
 import com.goldenraccoon.mementomoricalendar.ui.views.StatsRowModel
@@ -38,10 +40,11 @@ fun StatisticsPage(
     val percentageOfWeekPassed by viewModel.percentageOfWeekPassed.collectAsStateWithLifecycle()
     val percentageOfMonthPassed by viewModel.percentageOfMonthPassed.collectAsStateWithLifecycle()
 
-    val remainingYears by viewModel.remainingYears.collectAsStateWithLifecycle()
-    val remainingMonths by viewModel.remainingMonths.collectAsStateWithLifecycle()
-    val remainingWeeks by viewModel.remainingWeeks.collectAsStateWithLifecycle()
-    val remainingDays by viewModel.remainingDays.collectAsStateWithLifecycle()
+    val statType by viewModel.statsRowType.collectAsStateWithLifecycle()
+    val statYears by viewModel.statYears.collectAsStateWithLifecycle()
+    val statMonths by viewModel.statMonths.collectAsStateWithLifecycle()
+    val statWeeks by viewModel.statWeeks.collectAsStateWithLifecycle()
+    val statDays by viewModel.statDays.collectAsStateWithLifecycle()
 
     StatisticsPageContent(
         modifier = modifier,
@@ -51,12 +54,21 @@ fun StatisticsPage(
         percentageOfMonth = percentageOfMonthPassed,
         stats = StatsRowModel(
             listOf(
-                StatItem("Years", String.format(Locale.getDefault(), "%.1f", remainingYears)),
-                StatItem("Months", "$remainingMonths"),
-                StatItem("Weeks", "$remainingWeeks"),
-                StatItem("Days", DecimalFormat("#,###", DecimalFormatSymbols(Locale.getDefault())).format(remainingDays))
+                StatItem("Years", String.format(Locale.getDefault(), "%.1f", statYears)),
+                StatItem("Months", "$statMonths"),
+                StatItem("Weeks", "$statWeeks"),
+                StatItem(
+                    "Days",
+                    DecimalFormat("#,###", DecimalFormatSymbols(Locale.getDefault())).format(
+                        statDays
+                    )
+                )
             )
-        )
+        ),
+        statType = statType,
+        onStatsTypeChanged = {
+            viewModel.onStatsRowTypeChanged(it)
+        }
     )
 }
 
@@ -67,7 +79,9 @@ fun StatisticsPageContent(
     percentageOfDay: Int,
     percentageOfWeek: Int,
     percentageOfMonth: Int,
-    stats: StatsRowModel
+    stats: StatsRowModel,
+    statType: StatsRowType,
+    onStatsTypeChanged: (StatsRowType) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -117,7 +131,31 @@ fun StatisticsPageContent(
         Column(
             modifier = Modifier.padding(top = 16.dp)
         ) {
-            HeaderText("Total")
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp)
+            ) {
+                HeaderText("Total")
+
+                SingleChoiceSegmentedButton(
+                    modifier = Modifier.height(36.dp),
+                    options = listOf("Remaining", "Lived"),
+                    selectedIndex = when (statType) {
+                        StatsRowType.REMAINING -> 0
+                        StatsRowType.LIVED -> 1
+                    },
+                    onOptionSelected = {
+                        when (it) {
+                            0 -> onStatsTypeChanged(StatsRowType.REMAINING)
+                            1 -> onStatsTypeChanged(StatsRowType.LIVED)
+                            else -> {}
+                        }
+                    }
+                )
+            }
 
             StatsRow(
                 modifier = Modifier
@@ -171,7 +209,9 @@ fun StatisticsPageContentPreview() {
                     StatItem("Weeks", "2704"),
                     StatItem("Days", "18.920")
                 )
-            )
+            ),
+            statType = StatsRowType.REMAINING,
+            onStatsTypeChanged = { }
         )
     }
 }
