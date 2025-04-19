@@ -111,7 +111,7 @@ class StatisticsViewModel @Inject constructor(
             }
             val millisEnd = when (statsRowType) {
                 StatsRowType.LIVED -> System.currentTimeMillis()
-                StatsRowType.REMAINING -> settings.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
+                StatsRowType.REMAINING -> System.currentTimeMillis() + settings.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
             }
 
             val calendar = Calendar.getInstance()
@@ -122,6 +122,7 @@ class StatisticsViewModel @Inject constructor(
                 calendar.add(Calendar.MONTH, 1)
                 months++
             }
+            months--
 
             months.coerceAtLeast(0)
         }
