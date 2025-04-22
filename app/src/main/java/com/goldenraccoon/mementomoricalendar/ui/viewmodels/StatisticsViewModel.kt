@@ -100,7 +100,10 @@ class StatisticsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    val statWeeks = statDays.map { it / 7 }
+    val statWeeks = statDays
+        .combine(statsRowType) { days, statsRowType ->
+            days / 7 + if (statsRowType == StatsRowType.REMAINING) 1 else 0
+        }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     val statMonths = userSettingsRepository.userSettingsFlow
