@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -25,6 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.goldenraccoon.mementomoricalendar.ui.theme.MementoMoriCalendarTheme
+import com.goldenraccoon.mementomoricalendar.util.ColorUtil
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Composable
 fun CustomCircularProgress(
@@ -33,10 +37,22 @@ fun CustomCircularProgress(
     text: String,
     strokeWidth: Dp = 24.dp
 ) {
+    val boundedProgress = progress.coerceIn(0f, 1f)
     val trackColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3F)
     val color = MaterialTheme.colorScheme.primaryContainer
     val endColor = MaterialTheme.colorScheme.primary
-    val stroke = with(LocalDensity.current) { Stroke(width = strokeWidth.toPx(), cap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap) }
+    val backgroundStroke = with(LocalDensity.current) {
+        Stroke(
+            width = strokeWidth.toPx(),
+            cap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap
+        )
+    }
+    val progressStroke = with(LocalDensity.current) {
+        Stroke(
+            width = strokeWidth.toPx(),
+            cap = ProgressIndicatorDefaults.LinearStrokeCap
+        )
+    }
 
     Box(
         modifier = modifier.aspectRatio(1F),
@@ -45,13 +61,13 @@ fun CustomCircularProgress(
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .progressSemantics(progress),
+                .progressSemantics(boundedProgress),
 
-        ) {
+            ) {
             val startAngle = 270f
-            val sweep = progress * 360f
-            drawDeterminateCircularIndicator(startAngle, 360f, trackColor, stroke)
-            drawDeterminateCircularIndicator(startAngle, sweep, color, endColor, stroke)
+            val sweep = boundedProgress * 360f
+            drawDeterminateCircularIndicator(startAngle, 360f, trackColor, backgroundStroke)
+            drawDeterminateCircularIndicator(startAngle, sweep, color, endColor, progressStroke)
         }
 
         Text(
@@ -89,11 +105,24 @@ private fun DrawScope.drawCircularIndicator(
     gradientEnd: Color,
     stroke: Stroke
 ) {
-    // TODO: fix color at start cap
     // To draw this circle we need a rect with edges that line up with the midpoint of the stroke.
     // To do this we need to remove half the stroke width from the total diameter for both sides.
     val diameterOffset = stroke.width / 2
     val arcDimen = size.width - 2 * diameterOffset
+
+    val radius = size.width / 2 - diameterOffset
+
+    val startCapX =
+        radius * cos(Math.toRadians(startAngle.toDouble() + 90)).toFloat() + size.center.x
+    val startCapY =
+        radius * sin(Math.toRadians(startAngle.toDouble() + 90)).toFloat() + size.center.x
+
+    val endCapX =
+        radius * cos(Math.toRadians(sweep.toDouble() + startAngle + 90)).toFloat() + size.center.x
+    val endCapY =
+        radius * sin(Math.toRadians(sweep.toDouble() + startAngle + 90)).toFloat() + size.center.x
+    val endCapColor = ColorUtil.pointBetweenColors(gradientStart, gradientEnd, sweep / 360f)
+
     rotate(-90f) {
         drawArc(
             brush = Brush.sweepGradient(listOf(gradientStart, gradientEnd)),
@@ -104,6 +133,10 @@ private fun DrawScope.drawCircularIndicator(
             size = Size(arcDimen, arcDimen),
             style = stroke
         )
+
+        drawCircle(gradientStart, radius = diameterOffset, center = Offset(startCapX, startCapY))
+
+        drawCircle(endCapColor, radius = diameterOffset, center = Offset(endCapX, endCapY))
     }
 }
 
