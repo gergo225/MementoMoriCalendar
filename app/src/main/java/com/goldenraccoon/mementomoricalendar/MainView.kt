@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,7 +42,12 @@ fun MainView() {
             composable(route = AppRoutes.Birthday.name) {
                 SetupPage(
                     onFinishClicked = {
-                        navController.navigate(AppRoutes.TotalWeeksGrid.name)
+                        navController.navigate(AppRoutes.TotalWeeksGrid.name) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = false
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }
