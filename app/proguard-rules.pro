@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep all classes in the generated Protobuf package and their members
+-keep class com.goldenraccoon.mementomoricalendar.proto.** {
+    *;
+}
