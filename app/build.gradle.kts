@@ -109,6 +109,9 @@ dependencies {
     // Widgets (Glance)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
+
+    //WorkManger
+    implementation(libs.androidx.work.runtime.ktx)
 }
 
 protobuf {

@@ -8,3 +8,7 @@ object Constants {
     private const val MILLIS_IN_DAY = 24 * 60 * 60 * 1000L
     const val MILLIS_IN_YEAR = WEEKS_IN_YEAR * 7 * MILLIS_IN_DAY
 }
+
+object DataStoreConstants {
+    const val WIDGET_BIRTHDAY_MILLIS_KEY = "birthday_millis_key"
+}

@@ -1,10 +1,15 @@
 package com.goldenraccoon.mementomoricalendar.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
+import com.goldenraccoon.mementomoricalendar.widget.WidgetPreferencesWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -14,8 +19,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeeksGridViewModel @Inject constructor(
-    userSettingsRepository: UserSettingsRepository
+    userSettingsRepository: UserSettingsRepository,
+    @ApplicationContext application: Context
 ) : ViewModel() {
+    private val workManager = WorkManager.getInstance(application)
+
+    init {
+        setWork()
+    }
+
     val elapsedWeeks = userSettingsRepository.birthdayMillis
         .map { birthday ->
             val currentMillis = System.currentTimeMillis()
@@ -36,4 +48,11 @@ class WeeksGridViewModel @Inject constructor(
             !isBirthdaySet || !isLifeExpectancySet
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private fun setWork() {
+        // TODO: update when value changes, not at time intervals (problem: minimum time interval is 15 minutes - defined by the system)
+        val work = PeriodicWorkRequestBuilder<WidgetPreferencesWorker>(10, TimeUnit.SECONDS)
+            .build()
+        workManager.enqueue(work)
+    }
 }

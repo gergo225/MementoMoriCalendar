@@ -6,6 +6,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -20,11 +23,8 @@ import androidx.glance.layout.padding
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
-import com.goldenraccoon.mementomoricalendar.proto.UserSettings
-import com.goldenraccoon.mementomoricalendar.util.Constants
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_BIRTHDAY_MILLIS_KEY
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 class MementoMoriAppWidget : GlanceAppWidget() {
     override val stateDefinition: GlanceStateDefinition<*>
@@ -40,9 +40,10 @@ class MementoMoriAppWidget : GlanceAppWidget() {
 
     @Composable
     private fun WidgetContent() {
-        val userSettings = currentState<UserSettings>()
-        // TODO: update widget when value changes
-        val remainingWeeks = remember { userSettings.remainingWeeks() }
+        val preferences = currentState<Preferences>()
+        val birthdayMillis = remember {
+            preferences[stringPreferencesKey(WIDGET_BIRTHDAY_MILLIS_KEY)] ?: "error"
+        }
 
         Column(
             modifier = GlanceModifier
@@ -53,33 +54,25 @@ class MementoMoriAppWidget : GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$remainingWeeks",
-               style = TextStyle(fontSize = 24.sp)
-                )
+                text = birthdayMillis,
+                style = TextStyle(fontSize = 24.sp)
+            )
             Text("Weeks Remaining")
         }
     }
 }
 
-object MementoMoriGlanceStateDefinition : GlanceStateDefinition<UserSettings> {
-    private const val FILE_NAME = "user_settings"
+object MementoMoriGlanceStateDefinition : GlanceStateDefinition<Preferences> {
+    private const val FILE_NAME = "widget_preference"
 
-    override suspend fun getDataStore(context: Context, fileKey: String): DataStore<UserSettings> {
-        return context.userSettingsDataStore
+    override suspend fun getDataStore(context: Context, fileKey: String): DataStore<Preferences> {
+        return context.dataStore
     }
 
     override fun getLocation(context: Context, fileKey: String): File {
         return File(context.applicationContext.filesDir, "datastore/$FILE_NAME")
     }
-}
 
-private fun UserSettings.remainingWeeks(): Int {
-    val currentMillis = System.currentTimeMillis()
-    val elapsedMillis = currentMillis - birthdayMillis
-
-    val elapsedDays = TimeUnit.MILLISECONDS.toDays(elapsedMillis)
-    val elapsedWeeks = (elapsedDays / 7).toInt()
-
-    val totalWeeks = lifeExpectancyYears * Constants.WEEKS_IN_YEAR
-    return totalWeeks - elapsedWeeks
+    private val Context.dataStore: DataStore<Preferences>
+            by preferencesDataStore(name = FILE_NAME)
 }
