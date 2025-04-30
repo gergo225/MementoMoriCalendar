@@ -8,11 +8,9 @@ import androidx.glance.appwidget.updateAll
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
-import com.goldenraccoon.mementomoricalendar.proto.UserSettings
-import com.goldenraccoon.mementomoricalendar.util.Constants
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_BIRTHDAY_MILLIS_KEY
-import java.util.concurrent.TimeUnit
 
 class WidgetPreferencesWorker(
     private val context: Context,
@@ -41,15 +39,4 @@ class WidgetPreferencesWorker(
                 MementoMoriAppWidget().updateAll(context)
             }
     }
-}
-
-private fun UserSettings.remainingWeeks(): Int {
-    val currentMillis = System.currentTimeMillis()
-    val elapsedMillis = currentMillis - birthdayMillis
-
-    val elapsedDays = TimeUnit.MILLISECONDS.toDays(elapsedMillis)
-    val elapsedWeeks = (elapsedDays / 7).toInt()
-
-    val totalWeeks = lifeExpectancyYears * Constants.WEEKS_IN_YEAR
-    return totalWeeks - elapsedWeeks
 }

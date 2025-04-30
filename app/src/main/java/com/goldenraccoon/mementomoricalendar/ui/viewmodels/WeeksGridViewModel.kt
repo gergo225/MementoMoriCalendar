@@ -50,7 +50,7 @@ class WeeksGridViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private fun setWork() {
-        // TODO: update when value changes, not at time intervals (problem: minimum time interval is 15 minutes - defined by the system)
+        // TODO: run periodically to make sure remaining weeks is up to date (make sure not to create multiple workers, only 1 in total)
         val work = PeriodicWorkRequestBuilder<WidgetPreferencesWorker>(10, TimeUnit.SECONDS)
             .build()
         workManager.enqueue(work)

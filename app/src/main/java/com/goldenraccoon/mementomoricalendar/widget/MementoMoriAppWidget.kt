@@ -2,7 +2,6 @@ package com.goldenraccoon.mementomoricalendar.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
@@ -41,9 +40,9 @@ class MementoMoriAppWidget : GlanceAppWidget() {
     @Composable
     private fun WidgetContent() {
         val preferences = currentState<Preferences>()
-        val birthdayMillis = remember {
+        val birthdayMillis =
+            // TODO: use current value as default value (not "error")
             preferences[stringPreferencesKey(WIDGET_BIRTHDAY_MILLIS_KEY)] ?: "error"
-        }
 
         Column(
             modifier = GlanceModifier
