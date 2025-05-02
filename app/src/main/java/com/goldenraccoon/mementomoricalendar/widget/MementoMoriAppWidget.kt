@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.GlanceId
@@ -22,7 +23,12 @@ import androidx.glance.layout.padding
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_BIRTHDAY_MILLIS_KEY
+import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
+import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.io.File
 
 class MementoMoriAppWidget : GlanceAppWidget() {
@@ -41,8 +47,7 @@ class MementoMoriAppWidget : GlanceAppWidget() {
     private fun WidgetContent() {
         val preferences = currentState<Preferences>()
         val birthdayMillis =
-            // TODO: use current value as default value (not "error")
-            preferences[stringPreferencesKey(WIDGET_BIRTHDAY_MILLIS_KEY)] ?: "error"
+            preferences[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] ?: "--"
 
         Column(
             modifier = GlanceModifier
@@ -64,8 +69,21 @@ class MementoMoriAppWidget : GlanceAppWidget() {
 object MementoMoriGlanceStateDefinition : GlanceStateDefinition<Preferences> {
     private const val FILE_NAME = "widget_preference"
 
+    // TODO: fix: udpate settings -> add new widget -> widget still has old settings :(
     override suspend fun getDataStore(context: Context, fileKey: String): DataStore<Preferences> {
-        return context.dataStore
+        val dataStore = context.dataStore
+        val isBirthdaySet = dataStore.isBirthdayMillisSet.first()
+        if (!isBirthdaySet) {
+            val remainingWeeks = context.userSettingsDataStore.data.first().remainingWeeks()
+            if (remainingWeeks != null) {
+                dataStore.edit { preferences ->
+                    preferences[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] =
+                        remainingWeeks.toString()
+                }
+            }
+        }
+
+        return dataStore
     }
 
     override fun getLocation(context: Context, fileKey: String): File {
@@ -75,3 +93,10 @@ object MementoMoriGlanceStateDefinition : GlanceStateDefinition<Preferences> {
     private val Context.dataStore: DataStore<Preferences>
             by preferencesDataStore(name = FILE_NAME)
 }
+
+private val DataStore<Preferences>.isBirthdayMillisSet: Flow<Boolean>
+    get() {
+        return data.map {
+            it.contains(stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY))
+        }
+    }

@@ -10,7 +10,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
-import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_BIRTHDAY_MILLIS_KEY
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
 
 class WidgetPreferencesWorker(
     private val context: Context,
@@ -19,7 +19,7 @@ class WidgetPreferencesWorker(
     override suspend fun doWork(): Result {
         return try {
             context.userSettingsDataStore.data.collect {
-                val remainingWeeks = it.remainingWeeks()
+                val remainingWeeks = it.remainingWeeks() ?: return@collect
                 updateWidget(remainingWeeks)
             }
             Result.success()
@@ -33,7 +33,7 @@ class WidgetPreferencesWorker(
         GlanceAppWidgetManager(context).getGlanceIds(MementoMoriAppWidget::class.java)
             .forEach { glanceId ->
                 updateAppWidgetState(context, glanceId) { pref ->
-                    pref[stringPreferencesKey(WIDGET_BIRTHDAY_MILLIS_KEY)] =
+                    pref[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] =
                         remainingWeeks.toString()
                 }
                 MementoMoriAppWidget().updateAll(context)

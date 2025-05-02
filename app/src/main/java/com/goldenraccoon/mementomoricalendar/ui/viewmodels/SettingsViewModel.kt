@@ -15,7 +15,7 @@ import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
-import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_BIRTHDAY_MILLIS_KEY
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
 import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancy
 import com.goldenraccoon.mementomoricalendar.widget.MementoMoriAppWidget
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -104,12 +104,12 @@ class SettingsViewModel @Inject constructor(
 
     private suspend fun updateWidget() {
         application.userSettingsDataStore.data.collect {
-            val remainingWeeks = it.remainingWeeks()
+            val remainingWeeks = it.remainingWeeks() ?: return@collect
 
             GlanceAppWidgetManager(application).getGlanceIds(MementoMoriAppWidget::class.java)
                 .forEach { glanceId ->
                     updateAppWidgetState(application, glanceId) { pref ->
-                        pref[stringPreferencesKey(WIDGET_BIRTHDAY_MILLIS_KEY)] =
+                        pref[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] =
                             remainingWeeks.toString()
                     }
                     MementoMoriAppWidget().updateAll(application)
