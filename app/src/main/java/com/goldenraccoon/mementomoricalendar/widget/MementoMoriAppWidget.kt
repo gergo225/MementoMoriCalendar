@@ -69,7 +69,6 @@ class MementoMoriAppWidget : GlanceAppWidget() {
 object MementoMoriGlanceStateDefinition : GlanceStateDefinition<Preferences> {
     private const val FILE_NAME = "widget_preference"
 
-    // TODO: fix: udpate settings -> add new widget -> widget still has old settings :(
     override suspend fun getDataStore(context: Context, fileKey: String): DataStore<Preferences> {
         val dataStore = context.dataStore
         val isBirthdaySet = dataStore.isBirthdayMillisSet.first()
