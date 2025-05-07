@@ -10,13 +10,13 @@ import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMA
 class WidgetUtils {
     companion object {
         suspend fun updateRemainingWeeksWidgets(remainingWeeks: Int, context: Context) {
-            GlanceAppWidgetManager(context).getGlanceIds(MementoMoriAppWidget::class.java)
+            GlanceAppWidgetManager(context).getGlanceIds(RemainingWeeksWidget::class.java)
                 .forEach { glanceId ->
                     updateAppWidgetState(context, glanceId) { pref ->
                         pref[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] =
                             remainingWeeks.toString()
                     }
-                    MementoMoriAppWidget().updateAll(context)
+                    RemainingWeeksWidget().updateAll(context)
                 }
         }
     }

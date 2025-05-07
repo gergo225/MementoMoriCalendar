@@ -9,8 +9,8 @@ import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class MementoMoriAppWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = MementoMoriAppWidget()
+class RemainingWeeksWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = RemainingWeeksWidget()
 
     private val coroutineScope = MainScope()
 

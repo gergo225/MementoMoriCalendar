@@ -31,9 +31,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.File
 
-class MementoMoriAppWidget : GlanceAppWidget() {
+class RemainingWeeksWidget : GlanceAppWidget() {
     override val stateDefinition: GlanceStateDefinition<*>
-        get() = MementoMoriGlanceStateDefinition
+        get() = RemainingWeeksGlanceStateDefinition
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
@@ -66,8 +66,8 @@ class MementoMoriAppWidget : GlanceAppWidget() {
     }
 }
 
-object MementoMoriGlanceStateDefinition : GlanceStateDefinition<Preferences> {
-    private const val FILE_NAME = "widget_preference"
+object RemainingWeeksGlanceStateDefinition : GlanceStateDefinition<Preferences> {
+    private const val FILE_NAME = "remaining_weeks_widget_preference"
 
     override suspend fun getDataStore(context: Context, fileKey: String): DataStore<Preferences> {
         val dataStore = context.dataStore

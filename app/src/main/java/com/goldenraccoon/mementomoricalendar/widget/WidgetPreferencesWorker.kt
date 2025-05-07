@@ -30,13 +30,13 @@ class WidgetPreferencesWorker(
     }
 
     private suspend fun updateWidget(remainingWeeks: Int) {
-        GlanceAppWidgetManager(context).getGlanceIds(MementoMoriAppWidget::class.java)
+        GlanceAppWidgetManager(context).getGlanceIds(RemainingWeeksWidget::class.java)
             .forEach { glanceId ->
                 updateAppWidgetState(context, glanceId) { pref ->
                     pref[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] =
                         remainingWeeks.toString()
                 }
-                MementoMoriAppWidget().updateAll(context)
+                RemainingWeeksWidget().updateAll(context)
             }
     }
 }
