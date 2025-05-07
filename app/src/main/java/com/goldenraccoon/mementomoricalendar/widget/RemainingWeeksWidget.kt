@@ -46,7 +46,7 @@ class RemainingWeeksWidget : GlanceAppWidget() {
     @Composable
     private fun WidgetContent() {
         val preferences = currentState<Preferences>()
-        val birthdayMillis =
+        val remainingWeeks =
             preferences[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] ?: "--"
 
         Column(
@@ -58,7 +58,7 @@ class RemainingWeeksWidget : GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = birthdayMillis,
+                text = remainingWeeks,
                 style = TextStyle(fontSize = 24.sp)
             )
             Text("Weeks Remaining")
