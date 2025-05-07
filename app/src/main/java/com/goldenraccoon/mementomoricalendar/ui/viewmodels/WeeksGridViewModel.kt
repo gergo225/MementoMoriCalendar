@@ -3,6 +3,7 @@ package com.goldenraccoon.mementomoricalendar.ui.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
@@ -50,9 +51,8 @@ class WeeksGridViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private fun setWork() {
-        // TODO: run periodically to make sure remaining weeks is up to date (make sure not to create multiple workers, only 1 in total)
         val work = PeriodicWorkRequestBuilder<WidgetPreferencesWorker>(10, TimeUnit.SECONDS)
             .build()
-        workManager.enqueue(work)
+        workManager.enqueueUniquePeriodicWork("updateWidgetPreferences", ExistingPeriodicWorkPolicy.KEEP, work)
     }
 }
