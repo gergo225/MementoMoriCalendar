@@ -13,19 +13,26 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.text.Text
 
 class TotalLifeWidget: GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             GlanceTheme(colors = MementoMoriAppWidgetColorScheme.colors) {
-                WidgetContent()
+                Widget()
             }
         }
     }
 
     @Composable
-    fun WidgetContent() {
+    private fun Widget() {
+        WidgetContent()
+    }
+
+    @Composable
+    private fun WidgetContent() {
         Box(
             modifier = GlanceModifier
                 .padding(4.dp)
@@ -34,6 +41,15 @@ class TotalLifeWidget: GlanceAppWidget() {
             contentAlignment = Alignment.Center,
         ) {
             Text("Total Life")
+        }
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 180, heightDp = 90)
+    @Composable
+    private fun WidgetContentPreview() {
+        GlanceTheme(colors = MementoMoriAppWidgetColorScheme.colors) {
+            WidgetContent()
         }
     }
 }

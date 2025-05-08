@@ -20,6 +20,8 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -38,17 +40,24 @@ class RemainingWeeksWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             GlanceTheme(colors = MementoMoriAppWidgetColorScheme.colors) {
-                WidgetContent()
+                Widget()
             }
         }
     }
 
     @Composable
-    private fun WidgetContent() {
+    private fun Widget() {
         val preferences = currentState<Preferences>()
         val remainingWeeks =
             preferences[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] ?: "--"
 
+        WidgetContent(remainingWeeks)
+    }
+
+    @Composable
+    private fun WidgetContent(
+        remainingWeeks: String
+    ) {
         Column(
             modifier = GlanceModifier
                 .padding(4.dp)
@@ -62,6 +71,15 @@ class RemainingWeeksWidget : GlanceAppWidget() {
                 style = TextStyle(fontSize = 24.sp)
             )
             Text("Weeks Remaining")
+        }
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 180, heightDp = 90)
+    @Composable
+    private fun WidgetPreview() {
+        GlanceTheme(colors = MementoMoriAppWidgetColorScheme.colors) {
+            WidgetContent("5392")
         }
     }
 }
