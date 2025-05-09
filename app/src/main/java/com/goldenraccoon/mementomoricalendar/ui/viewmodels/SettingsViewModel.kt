@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
+import com.goldenraccoon.mementomoricalendar.data.percentageOfLifeLived
 import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
@@ -70,7 +71,7 @@ class SettingsViewModel @Inject constructor(
             updateBirthdayIfNeeded()
 
             GlobalScope.launch(Dispatchers.IO) {
-                updateWidget()
+                updateWidgets()
             }
         }
     }
@@ -97,10 +98,15 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateWidget() {
+    private suspend fun updateWidgets() {
         applicationContext.userSettingsDataStore.data.collect {
-            val remainingWeeks = it.remainingWeeks() ?: return@collect
-            WidgetUtils.updateRemainingWeeksWidgets(remainingWeeks, applicationContext)
+            val remainingWeeks = it.remainingWeeks()
+            if (remainingWeeks != null) {
+                WidgetUtils.updateRemainingWeeksWidgets(remainingWeeks, applicationContext)
+            }
+
+            val percentageLived = it.percentageOfLifeLived() ?: 0
+            WidgetUtils.updateTotalLifeWidget(percentageLived, applicationContext)
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
 
 class WidgetUtils {
@@ -17,6 +18,17 @@ class WidgetUtils {
                             remainingWeeks.toString()
                     }
                     RemainingWeeksWidget().updateAll(context)
+                }
+        }
+
+        suspend fun updateTotalLifeWidget(percentageLived: Int, context: Context) {
+            GlanceAppWidgetManager(context).getGlanceIds(TotalLifeWidget::class.java)
+                .forEach { glanceId ->
+                    updateAppWidgetState(context, glanceId) { pref ->
+                        pref[stringPreferencesKey(WIDGET_PERCENTAGE_LIVED_KEY)] =
+                            percentageLived.toString()
+                    }
+                    TotalLifeWidget().updateAll(context)
                 }
         }
     }
