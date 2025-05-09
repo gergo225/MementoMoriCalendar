@@ -8,35 +8,35 @@ import androidx.glance.appwidget.updateAll
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
+import com.goldenraccoon.mementomoricalendar.data.percentageOfLifeLived
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
-import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
 
-class RemainingWeeksWidgetPreferencesWorker(
+class TotalLifeWidgetPreferencesWorker(
     private val context: Context,
     workerParameters: WorkerParameters
 ) : CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
         return try {
             context.userSettingsDataStore.data.collect {
-                val remainingWeeks = it.remainingWeeks() ?: return@collect
-                updateWidget(remainingWeeks)
+                val percentageLived = it.percentageOfLifeLived() ?: return@collect
+                updateWidget(percentageLived)
             }
             Result.success()
         } catch (e: Exception) {
             e.printStackTrace()
-            Result.failure(workDataOf("Failed to update 'RemainingWeeks' widget" to e.localizedMessage))
+            Result.failure(workDataOf("Failed to update 'TotalLife' widget" to e.localizedMessage))
         }
     }
 
-    private suspend fun updateWidget(remainingWeeks: Int) {
-        GlanceAppWidgetManager(context).getGlanceIds(RemainingWeeksWidget::class.java)
+    private suspend fun updateWidget(percentageLived: Int) {
+        GlanceAppWidgetManager(context).getGlanceIds(TotalLifeWidget::class.java)
             .forEach { glanceId ->
                 updateAppWidgetState(context, glanceId) { pref ->
-                    pref[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] =
-                        remainingWeeks.toString()
+                    pref[stringPreferencesKey(WIDGET_PERCENTAGE_LIVED_KEY)] =
+                        percentageLived.toString()
                 }
-                RemainingWeeksWidget().updateAll(context)
+                TotalLifeWidget().updateAll(context)
             }
     }
 }
