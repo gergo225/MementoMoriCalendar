@@ -92,8 +92,8 @@ object RemainingWeeksGlanceStateDefinition : GlanceStateDefinition<Preferences> 
 
     override suspend fun getDataStore(context: Context, fileKey: String): DataStore<Preferences> {
         val dataStore = context.dataStore
-        val isBirthdaySet = dataStore.isBirthdayMillisSet.first()
-        if (!isBirthdaySet) {
+        val isRemainingWeeksSet = dataStore.isRemainingWeeksSet.first()
+        if (!isRemainingWeeksSet) {
             val remainingWeeks = context.userSettingsDataStore.data.first().remainingWeeks()
             if (remainingWeeks != null) {
                 dataStore.edit { preferences ->
@@ -114,7 +114,7 @@ object RemainingWeeksGlanceStateDefinition : GlanceStateDefinition<Preferences> 
             by preferencesDataStore(name = FILE_NAME)
 }
 
-private val DataStore<Preferences>.isBirthdayMillisSet: Flow<Boolean>
+private val DataStore<Preferences>.isRemainingWeeksSet: Flow<Boolean>
     get() {
         return data.map {
             it.contains(stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY))

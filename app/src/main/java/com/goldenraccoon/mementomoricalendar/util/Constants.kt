@@ -11,4 +11,5 @@ object Constants {
 
 object DataStoreConstants {
     const val WIDGET_REMAINING_WEEKS_KEY = "remaining_weeks_key"
+    const val WIDGET_PERCENTAGE_LIVED_KEY = "percentage_lived_key"
 }
