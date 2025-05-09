@@ -61,16 +61,19 @@ class RemainingWeeksWidget : GlanceAppWidget() {
         Column(
             modifier = GlanceModifier
                 .padding(4.dp)
-                .background(GlanceTheme.colors.widgetBackground)
+                .background(GlanceTheme.colors.background)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = remainingWeeks,
-                style = TextStyle(fontSize = 24.sp)
+                style = TextStyle(fontSize = 24.sp, color = GlanceTheme.colors.primary)
             )
-            Text("Weeks Remaining")
+            Text(
+                text = "Weeks Remaining",
+                style = TextStyle(color = GlanceTheme.colors.primary)
+            )
         }
     }
 
