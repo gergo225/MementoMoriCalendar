@@ -1,4 +1,4 @@
-package com.goldenraccoon.mementomoricalendar.widget
+package com.goldenraccoon.mementomoricalendar.widget.weeks
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -6,6 +6,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
+import com.goldenraccoon.mementomoricalendar.widget.WidgetUtils
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 

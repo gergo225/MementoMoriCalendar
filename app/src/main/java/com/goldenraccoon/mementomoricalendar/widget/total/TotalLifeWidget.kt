@@ -1,4 +1,4 @@
-package com.goldenraccoon.mementomoricalendar.widget
+package com.goldenraccoon.mementomoricalendar.widget.total
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -34,6 +34,7 @@ import androidx.glance.unit.FixedColorProvider
 import com.goldenraccoon.mementomoricalendar.data.percentageOfLifeLived
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
+import com.goldenraccoon.mementomoricalendar.widget.MementoMoriAppWidgetColorScheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

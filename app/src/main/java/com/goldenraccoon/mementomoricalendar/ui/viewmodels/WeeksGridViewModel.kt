@@ -8,8 +8,8 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
-import com.goldenraccoon.mementomoricalendar.widget.RemainingWeeksWidgetPreferencesWorker
-import com.goldenraccoon.mementomoricalendar.widget.TotalLifeWidgetPreferencesWorker
+import com.goldenraccoon.mementomoricalendar.widget.weeks.RemainingWeeksWidgetPreferencesWorker
+import com.goldenraccoon.mementomoricalendar.widget.total.TotalLifeWidgetPreferencesWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted

@@ -1,4 +1,4 @@
-package com.goldenraccoon.mementomoricalendar.widget
+package com.goldenraccoon.mementomoricalendar.widget.weeks
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -28,6 +28,7 @@ import androidx.glance.text.TextStyle
 import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
+import com.goldenraccoon.mementomoricalendar.widget.MementoMoriAppWidgetColorScheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

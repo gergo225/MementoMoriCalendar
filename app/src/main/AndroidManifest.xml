@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.RemainingWeeksWidgetReceiver"
+        <receiver android:name=".widget.weeks.RemainingWeeksWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -34,7 +34,7 @@
                 android:resource="@xml/remaining_weeks_app_widget_info" />
         </receiver>
 
-        <receiver android:name=".widget.TotalLifeWidgetReceiver"
+        <receiver android:name=".widget.total.TotalLifeWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

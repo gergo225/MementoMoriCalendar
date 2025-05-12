@@ -7,6 +7,8 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
+import com.goldenraccoon.mementomoricalendar.widget.total.TotalLifeWidget
+import com.goldenraccoon.mementomoricalendar.widget.weeks.RemainingWeeksWidget
 
 class WidgetUtils {
     companion object {

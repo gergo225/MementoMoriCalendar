@@ -1,4 +1,4 @@
-package com.goldenraccoon.mementomoricalendar.widget
+package com.goldenraccoon.mementomoricalendar.widget.total
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
