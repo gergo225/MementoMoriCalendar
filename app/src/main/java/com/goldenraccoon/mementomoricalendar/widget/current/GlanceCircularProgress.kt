@@ -28,7 +28,7 @@ import kotlin.math.sin
 fun GlanceCircularProgress(
     progress: Float,
     text: String,
-    strokeWidth: Float = 200f,  // TODO: try to use .dp instead of pixels
+    strokeWidthRatio: Float = 0.15f,
     modifier: GlanceModifier = GlanceModifier
 ) {
     val context = LocalContext.current
@@ -38,13 +38,14 @@ fun GlanceCircularProgress(
     val color = GlanceTheme.colors.primaryContainer.getColor(context)
     val endColor = GlanceTheme.colors.primary.getColor(context)
 
-    // TODO: try to use .dp instead of pixels
-    val bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888)
+    val bitmapSize = 1000
+    val bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
 
     val startAngle = 270f
     val sweep = boundedProgress * 360f
 
+    val strokeWidth = bitmapSize * strokeWidthRatio
     canvas.drawDeterminateCircularIndicator(startAngle, 360f, trackColor, strokeWidth)
     canvas.drawDeterminateCircularIndicator(startAngle, sweep, color, endColor, strokeWidth)
 
