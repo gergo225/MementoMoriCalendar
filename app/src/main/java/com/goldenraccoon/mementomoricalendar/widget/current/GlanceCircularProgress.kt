@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
@@ -21,6 +22,8 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.preview.ExperimentalGlancePreviewApi
 import androidx.glance.preview.Preview
 import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
+import androidx.glance.text.TextStyle
 import com.goldenraccoon.mementomoricalendar.util.ColorUtil
 import com.goldenraccoon.mementomoricalendar.widget.MementoMoriAppWidgetColorScheme
 import kotlin.math.cos
@@ -52,17 +55,22 @@ fun GlanceCircularProgress(
     canvas.drawDeterminateCircularIndicator(startAngle, sweep, color, endColor, strokeWidth)
 
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = modifier
     ) {
         Image(
-            modifier = modifier,
             provider = ImageProvider(bitmap),
             contentScale = ContentScale.Fit,
             contentDescription = "Circular progress bar"
         )
 
         Text(
-            text = text
+            text = text,
+            style = TextStyle(
+                fontSize = 10.sp,
+                textAlign = TextAlign.Center,
+                color = GlanceTheme.colors.primary
+            )
         )
     }
 }
@@ -186,7 +194,7 @@ fun GlanceCircularProgressPreview() {
     GlanceTheme(colors = MementoMoriAppWidgetColorScheme.colors) {
         GlanceCircularProgress(
             progress = 0.7f,
-            text = "70%",
+            text = "70%\nMonth",
             modifier = GlanceModifier.fillMaxSize()
         )
     }
