@@ -2,7 +2,9 @@ package com.goldenraccoon.mementomoricalendar.widget.current
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.SweepGradient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -119,6 +121,15 @@ private fun Canvas.drawCircularIndicator(
     val endCapColor = ColorUtil.pointBetweenColors(gradientStart, gradientEnd, sweep / 360f)
 
 
+    val gradient = SweepGradient(
+        width / 2f, height / 2f,
+        gradientStart.toArgb(), gradientEnd.toArgb()
+    )
+    val rotationMatrix = Matrix().apply {
+        postRotate(-90f, width / 2f, height / 2f)
+    }
+    gradient.setLocalMatrix(rotationMatrix)
+
     drawArc(
         diameterOffset,
         diameterOffset,
@@ -129,8 +140,8 @@ private fun Canvas.drawCircularIndicator(
         false,
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
-            color = gradientEnd.toArgb()
             this.strokeWidth = strokeWidth
+            shader = gradient
         }
     )
 
