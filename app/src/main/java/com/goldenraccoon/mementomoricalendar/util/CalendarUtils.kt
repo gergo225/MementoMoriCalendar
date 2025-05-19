@@ -4,9 +4,9 @@ import android.icu.util.Calendar
 import java.util.concurrent.TimeUnit
 
 fun Calendar.getMillisPassedToday(): Long {
-    val millisPassedToday = TimeUnit.HOURS.toMillis(Calendar.HOUR_OF_DAY.toLong()) +
-            TimeUnit.MINUTES.toMillis(Calendar.MINUTE.toLong()) +
-            TimeUnit.SECONDS.toMillis(Calendar.SECOND.toLong()) +
+    val millisPassedToday = TimeUnit.HOURS.toMillis(get(Calendar.HOUR_OF_DAY).toLong()) +
+            TimeUnit.MINUTES.toMillis(get(Calendar.MINUTE).toLong()) +
+            TimeUnit.SECONDS.toMillis(get(Calendar.SECOND).toLong()) +
             get(Calendar.MILLISECOND)
 
     return millisPassedToday
@@ -31,4 +31,28 @@ fun Calendar.getMillisPassedThisMonth(): Long {
             getMillisPassedToday()
 
     return millisPassedThisMonth
+}
+
+fun Calendar.percentageOfDayPassed(): Double {
+    val millisPassedToday = getMillisPassedToday()
+
+    val percentage = millisPassedToday.toDouble() / TimeUnit.DAYS.toMillis(1L)
+    return percentage
+}
+
+fun Calendar.percentageOfWeekPassed(): Double {
+    val millisPassedThisWeek = getMillisPassedThisWeek()
+    val millisInWeek = TimeUnit.DAYS.toMillis(7L)
+
+    val percentage = millisPassedThisWeek.toDouble() / millisInWeek
+    return percentage
+}
+
+fun Calendar.percentageOfMonthPassed(): Double {
+    val millisPassedThisMonth = getMillisPassedThisMonth()
+    val lastDayOfMonth = getActualMaximum(Calendar.DAY_OF_MONTH)
+    val millisInMonth = TimeUnit.DAYS.toMillis(lastDayOfMonth.toLong())
+
+    val percentage = millisPassedThisMonth.toDouble() / millisInMonth
+    return percentage
 }

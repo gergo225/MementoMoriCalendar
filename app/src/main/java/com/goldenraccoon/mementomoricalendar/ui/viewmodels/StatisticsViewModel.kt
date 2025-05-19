@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants
 import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_YEAR
-import com.goldenraccoon.mementomoricalendar.util.getMillisPassedThisMonth
-import com.goldenraccoon.mementomoricalendar.util.getMillisPassedThisWeek
-import com.goldenraccoon.mementomoricalendar.util.getMillisPassedToday
+import com.goldenraccoon.mementomoricalendar.util.percentageOfDayPassed
+import com.goldenraccoon.mementomoricalendar.util.percentageOfMonthPassed
+import com.goldenraccoon.mementomoricalendar.util.percentageOfWeekPassed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,9 +47,7 @@ class StatisticsViewModel @Inject constructor(
     val percentageOfDayPassed = flow {
         while (true) {
             val calendar = Calendar.getInstance()
-            val millisPassedToday = calendar.getMillisPassedToday()
-
-            val percentage = millisPassedToday.toDouble() / TimeUnit.DAYS.toMillis(1L)
+            val percentage = calendar.percentageOfDayPassed()
             emit((percentage * 100).roundToInt())
             delay(1000)
         }
@@ -59,10 +57,7 @@ class StatisticsViewModel @Inject constructor(
     val percentageOfWeekPassed = flow {
         while (true) {
             val calendar = Calendar.getInstance()
-            val millisPassedThisWeek = calendar.getMillisPassedThisWeek()
-            val millisInWeek = TimeUnit.DAYS.toMillis(7L)
-
-            val percentage = millisPassedThisWeek.toDouble() / millisInWeek
+            val percentage = calendar.percentageOfWeekPassed()
             emit((percentage * 100).roundToInt())
             delay(1000)
         }
@@ -72,11 +67,7 @@ class StatisticsViewModel @Inject constructor(
     val percentageOfMonthPassed = flow {
         while (true) {
             val calendar = Calendar.getInstance()
-            val millisPassedThisMonth = calendar.getMillisPassedThisMonth()
-            val lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-            val millisInMonth = TimeUnit.DAYS.toMillis(lastDayOfMonth.toLong())
-
-            val percentage = millisPassedThisMonth.toDouble() / millisInMonth
+            val percentage = calendar.percentageOfMonthPassed()
             emit((percentage * 100).roundToInt())
             delay(1000)
         }
