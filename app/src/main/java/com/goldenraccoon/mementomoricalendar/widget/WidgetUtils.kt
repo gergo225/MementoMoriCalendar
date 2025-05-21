@@ -6,7 +6,11 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_OF_DAY_KEY
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_OF_MONTH_KEY
+import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_OF_WEEK_KEY
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
+import com.goldenraccoon.mementomoricalendar.widget.current.CurrentPeriodWidget
 import com.goldenraccoon.mementomoricalendar.widget.total.TotalLifeWidget
 import com.goldenraccoon.mementomoricalendar.widget.weeks.RemainingWeeksWidget
 
@@ -31,6 +35,18 @@ class WidgetUtils {
                             percentageLived.toString()
                     }
                     TotalLifeWidget().updateAll(context)
+                }
+        }
+
+        suspend fun updateCurrentPeriodWidget(dayPercentage: Int, weekPercentage: Int, monthPercentage: Int, context: Context) {
+            GlanceAppWidgetManager(context).getGlanceIds(CurrentPeriodWidget::class.java)
+                .forEach { glanceId ->
+                    updateAppWidgetState(context, glanceId) { pref ->
+                        pref[stringPreferencesKey(WIDGET_PERCENTAGE_OF_DAY_KEY)] = dayPercentage.toString()
+                        pref[stringPreferencesKey(WIDGET_PERCENTAGE_OF_WEEK_KEY)] = weekPercentage.toString()
+                        pref[stringPreferencesKey(WIDGET_PERCENTAGE_OF_MONTH_KEY)] = monthPercentage.toString()
+                    }
+                    CurrentPeriodWidget().updateAll(context)
                 }
         }
     }
