@@ -35,6 +35,7 @@ import com.goldenraccoon.mementomoricalendar.data.percentageOfLifeLived
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
 import com.goldenraccoon.mementomoricalendar.widget.MementoMoriAppWidgetColorScheme
+import com.goldenraccoon.mementomoricalendar.widget.NoDataContent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -56,12 +57,17 @@ class TotalLifeWidget : GlanceAppWidget() {
     @Composable
     private fun Widget() {
         val preferences = currentState<Preferences>()
-        val percentageLivedString = preferences[stringPreferencesKey(WIDGET_PERCENTAGE_LIVED_KEY)] ?: "0"
-        val percentageLived = (percentageLivedString.toFloatOrNull() ?: 0f) / 100
 
-        WidgetContent(
-            lifeProgress = percentageLived
-        )
+        val percentageLivedString = preferences[stringPreferencesKey(WIDGET_PERCENTAGE_LIVED_KEY)]
+        if (percentageLivedString != null) {
+            val percentageLived = (percentageLivedString.toFloatOrNull() ?: 0f) / 100
+
+            WidgetContent(
+                lifeProgress = percentageLived
+            )
+        } else {
+            NoDataContent()
+        }
     }
 
     @Composable

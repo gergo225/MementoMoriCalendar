@@ -29,6 +29,7 @@ import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_REMAINING_WEEKS_KEY
 import com.goldenraccoon.mementomoricalendar.widget.MementoMoriAppWidgetColorScheme
+import com.goldenraccoon.mementomoricalendar.widget.NoDataContent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -50,9 +51,13 @@ class RemainingWeeksWidget : GlanceAppWidget() {
     private fun Widget() {
         val preferences = currentState<Preferences>()
         val remainingWeeks =
-            preferences[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)] ?: "--"
+            preferences[stringPreferencesKey(WIDGET_REMAINING_WEEKS_KEY)]
 
-        WidgetContent(remainingWeeks)
+        if (remainingWeeks != null) {
+            WidgetContent(remainingWeeks)
+        } else {
+            NoDataContent()
+        }
     }
 
     @Composable

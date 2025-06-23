@@ -2,9 +2,11 @@ package com.goldenraccoon.mementomoricalendar.widget
 
 import android.content.Context
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
+import com.goldenraccoon.mementomoricalendar.MainActivity
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_OF_DAY_KEY
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_OF_MONTH_KEY
@@ -16,6 +18,8 @@ import com.goldenraccoon.mementomoricalendar.widget.weeks.RemainingWeeksWidget
 
 class WidgetUtils {
     companion object {
+        val startAppAction = actionStartActivity<MainActivity>()
+
         suspend fun updateRemainingWeeksWidgets(remainingWeeks: Int, context: Context) {
             GlanceAppWidgetManager(context).getGlanceIds(RemainingWeeksWidget::class.java)
                 .forEach { glanceId ->
