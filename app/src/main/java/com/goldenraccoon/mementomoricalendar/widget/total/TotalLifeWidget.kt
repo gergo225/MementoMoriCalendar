@@ -12,11 +12,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.LinearProgressIndicator
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
+import androidx.glance.color.DayNightColorProvider
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -30,9 +30,10 @@ import androidx.glance.preview.Preview
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.FixedColorProvider
 import com.goldenraccoon.mementomoricalendar.data.percentageOfLifeLived
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
+import com.goldenraccoon.mementomoricalendar.ui.theme.DarkColors
+import com.goldenraccoon.mementomoricalendar.ui.theme.LightColors
 import com.goldenraccoon.mementomoricalendar.util.DataStoreConstants.WIDGET_PERCENTAGE_LIVED_KEY
 import com.goldenraccoon.mementomoricalendar.widget.MementoMoriAppWidgetColorScheme
 import com.goldenraccoon.mementomoricalendar.widget.NoDataContent
@@ -74,8 +75,6 @@ class TotalLifeWidget : GlanceAppWidget() {
     private fun WidgetContent(
         lifeProgress: Float
     ) {
-        val context = LocalContext.current
-
         Column(
             modifier = GlanceModifier
                 .padding(vertical = 4.dp)
@@ -88,9 +87,9 @@ class TotalLifeWidget : GlanceAppWidget() {
                 text = "Total Life",
                 maxLines = 1,
                 style = TextStyle(
-                    color = FixedColorProvider(
-                        // TODO: fix: when changing light/dark mode, colors using ".getColor" are not updated
-                        GlanceTheme.colors.primary.getColor(context).copy(alpha = 0.6f)
+                    color = DayNightColorProvider(
+                        LightColors.error.copy(alpha = 0.6f),
+                        DarkColors.error.copy(alpha = 0.6f)
                     ),
                     fontSize = 12.sp
                 ),
@@ -103,8 +102,9 @@ class TotalLifeWidget : GlanceAppWidget() {
                     .height(32.dp),
                 progress = lifeProgress,
                 color = GlanceTheme.colors.primary,
-                backgroundColor = FixedColorProvider(
-                    GlanceTheme.colors.primary.getColor(context).copy(alpha = 0.2f)
+                backgroundColor = DayNightColorProvider(
+                    LightColors.primary.copy(alpha = 0.2f),
+                    DarkColors.primary.copy(alpha = 0.2f)
                 )
             )
 
