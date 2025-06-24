@@ -6,6 +6,7 @@
     android:targetCellWidth="2"
     android:targetCellHeight="1"
     android:maxResizeWidth="700dp"
-    android:resizeMode="horizontal">
+    android:resizeMode="horizontal"
+    android:previewImage="@drawable/total_life_widget">
 
 </appwidget-provider>
