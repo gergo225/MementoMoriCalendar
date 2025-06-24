@@ -25,7 +25,8 @@
         </activity>
 
         <receiver android:name=".widget.weeks.RemainingWeeksWidgetReceiver"
-            android:exported="true">
+            android:exported="true"
+            android:label="Remaining Weeks">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -35,7 +36,8 @@
         </receiver>
 
         <receiver android:name=".widget.total.TotalLifeWidgetReceiver"
-            android:exported="true">
+            android:exported="true"
+            android:label="Total Life">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -45,7 +47,8 @@
         </receiver>
 
         <receiver android:name=".widget.current.CurrentPeriodWidgetReceiver"
-            android:exported="true">
+            android:exported="true"
+            android:label="Current Period">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
