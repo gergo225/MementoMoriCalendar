@@ -8,6 +8,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
+import com.goldenraccoon.mementomoricalendar.widget.current.CurrentPeriodPreferencesWorker
 import com.goldenraccoon.mementomoricalendar.widget.weeks.RemainingWeeksWidgetPreferencesWorker
 import com.goldenraccoon.mementomoricalendar.widget.total.TotalLifeWidgetPreferencesWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,11 +53,15 @@ class WeeksGridViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private fun setWork() {
-        val remainingWeeksWork = PeriodicWorkRequestBuilder<RemainingWeeksWidgetPreferencesWorker>(10, TimeUnit.SECONDS)
+        val remainingWeeksWork = PeriodicWorkRequestBuilder<RemainingWeeksWidgetPreferencesWorker>(1, TimeUnit.HOURS)
             .build()
         val totalLifeWork = PeriodicWorkRequestBuilder<TotalLifeWidgetPreferencesWorker>(1, TimeUnit.DAYS)
             .build()
+        val currentPeriodWork = PeriodicWorkRequestBuilder<CurrentPeriodPreferencesWorker>(15, TimeUnit.MINUTES)
+            .build()
+
         workManager.enqueueUniquePeriodicWork("updateRemainingWeeksWidgetPreferences", ExistingPeriodicWorkPolicy.KEEP, remainingWeeksWork)
         workManager.enqueueUniquePeriodicWork("updateTotalLifeWidgetPreferences", ExistingPeriodicWorkPolicy.KEEP, totalLifeWork)
+        workManager.enqueueUniquePeriodicWork("updateCurrentPeriodWidgetPreferences", ExistingPeriodicWorkPolicy.KEEP, currentPeriodWork)
     }
 }
