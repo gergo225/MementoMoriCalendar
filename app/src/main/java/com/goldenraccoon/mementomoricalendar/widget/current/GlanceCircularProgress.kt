@@ -14,7 +14,6 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
-import androidx.glance.LocalContext
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.ContentScale
@@ -36,12 +35,9 @@ fun GlanceCircularProgress(
     strokeWidthRatio: Float = 0.15f,
     modifier: GlanceModifier = GlanceModifier
 ) {
-    val context = LocalContext.current
-
     val boundedProgress = progress.coerceIn(0f, 1f)
-    val trackColor = GlanceTheme.colors.primaryContainer.getColor(context).copy(alpha = 0.3F)
-    val color = GlanceTheme.colors.primaryContainer.getColor(context)
-    val endColor = GlanceTheme.colors.primary.getColor(context)
+    val color = Color(red = 0.71f, green = 0.43f, blue = 0.3f)
+    val trackColor = color.copy(alpha = 0.2f)
 
     val bitmapSize = 1000
     val bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888)
@@ -52,7 +48,7 @@ fun GlanceCircularProgress(
 
     val strokeWidth = bitmapSize * strokeWidthRatio
     canvas.drawDeterminateCircularIndicator(startAngle, 360f, trackColor, strokeWidth)
-    canvas.drawDeterminateCircularIndicator(startAngle, sweep, color, endColor, strokeWidth)
+    canvas.drawDeterminateCircularIndicator(startAngle, sweep, color, color, strokeWidth)
 
     Box(
         contentAlignment = Alignment.Center,
