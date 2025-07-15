@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +30,7 @@ fun LifeExpectancySetupContent(
     modifier: Modifier = Modifier,
     lifeExpectancyText: String,
     onLifeExpectancyChange: (String) -> Unit,
+    lifeExpectancyWarning: String? = null,
     isButtonEnabled: Boolean,
     onFinishClicked: () -> Unit
 ) {
@@ -48,7 +52,21 @@ fun LifeExpectancySetupContent(
             placeholder = { Text(Constants.DEFAULT_LIFE_EXPECTANCY_YEARS.toString(), color = Color.Gray) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = lifeExpectancyWarning != null,
+            supportingText = {
+                if (lifeExpectancyWarning != null) {
+                    Text(
+                        text = lifeExpectancyWarning,
+                        color = MaterialTheme.colorScheme.errorContainer
+                    )
+                }
+            },
+            trailingIcon = {
+                if (lifeExpectancyWarning != null) {
+                    Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colorScheme.errorContainer)
+                }
+            }
         )
 
         Spacer(modifier = Modifier.weight(1F))

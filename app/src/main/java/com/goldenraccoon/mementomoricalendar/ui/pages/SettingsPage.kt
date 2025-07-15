@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -71,6 +72,8 @@ fun SettingsPage(
         onBirthdayChange = {
             viewModel.onBirthdayInputChange(it)
         },
+        lifeExpectancyWarning = viewModel.lifeExpectancyWarning,
+        birthdayWarning = viewModel.birthdayWarning,
         onSaveClick = {
             viewModel.saveSettings()
             onNavigateBack()
@@ -88,6 +91,8 @@ fun SettingsPageContent(
     birthdayMillis: Long?,
     onLifeExpectancyChange: (String) -> Unit,
     onBirthdayChange: (Long?) -> Unit,
+    lifeExpectancyWarning: String? = null,
+    birthdayWarning: String? = null,
     onSaveClick: () -> Unit,
     isSaveEnabled: Boolean = true
 ) {
@@ -112,7 +117,21 @@ fun SettingsPageContent(
                 placeholder = { Text(initialLifeExpectancy.toString(), color = Color.Gray) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = lifeExpectancyWarning != null,
+                supportingText = {
+                    if (lifeExpectancyWarning != null) {
+                        Text(
+                            lifeExpectancyWarning,
+                            color = MaterialTheme.colorScheme.errorContainer
+                        )
+                    }
+                },
+                trailingIcon = {
+                    if (lifeExpectancyWarning != null) {
+                        Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colorScheme.errorContainer)
+                    }
+                }
             )
 
             OutlinedTextField(
@@ -136,7 +155,16 @@ fun SettingsPageContent(
                                 showDatePickerModal = true
                             }
                         }
+                    },
+                isError = birthdayWarning != null,
+                supportingText = {
+                    if (birthdayWarning != null) {
+                        Text(
+                            birthdayWarning,
+                            color = MaterialTheme.colorScheme.errorContainer
+                        )
                     }
+                }
             )
         }
 

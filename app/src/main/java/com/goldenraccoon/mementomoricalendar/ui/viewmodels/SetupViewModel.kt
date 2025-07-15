@@ -7,7 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
-import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancy
+import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancyAndBirthday
+import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancyInput
+import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.minLifeExpectancyNeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -30,11 +32,18 @@ class SetupViewModel @Inject constructor(
     var lifeExpectancyInput by mutableStateOf(DEFAULT_LIFE_EXPECTANCY_YEARS.toString())
         private set
 
+    var lifeExpectancyWarning by mutableStateOf<String?>(null)
+        private set
+
     val isContinueEnabled by derivedStateOf {
         selectedDateMillis != null
     }
     val isFinishEnabled by derivedStateOf {
-        isValidLifeExpectancy(lifeExpectancyInput)
+        isValidLifeExpectancyInput(lifeExpectancyInput)
+
+        val lifeExpectancy = lifeExpectancyInput.toIntOrNull()
+        val birthdayMillis = selectedDateMillis
+        isValidLifeExpectancyAndBirthday(lifeExpectancy, birthdayMillis)
     }
 
     fun onDateSelected(dateMillis: Long?) {
@@ -43,8 +52,15 @@ class SetupViewModel @Inject constructor(
 
     fun onLifeExpectancyInputChange(newValue: String) {
         val hasInput = newValue.isNotEmpty()
-        if (hasInput && !isValidLifeExpectancy(newValue)) {
+        if (hasInput && !isValidLifeExpectancyInput(newValue)) {
             return
+        }
+
+        val isLifeExpectancyTooSmall = !isValidLifeExpectancyAndBirthday(newValue.toIntOrNull(), selectedDateMillis)
+        if (isLifeExpectancyTooSmall) {
+            showLifeExpectancyTooSmallWarning()
+        } else {
+            hideLifeExpectancyTooSmallWarning()
         }
 
         lifeExpectancyInput = newValue
@@ -64,4 +80,16 @@ class SetupViewModel @Inject constructor(
         }
     }
 
+    private fun showLifeExpectancyTooSmallWarning() {
+        val birthdayMillis = selectedDateMillis ?: return
+        val minimumLifeExpectancy = minLifeExpectancyNeeded(birthdayMillis)
+        lifeExpectancyWarning = "Must be $minimumLifeExpectancy or greater."
+    }
+
+    private fun hideLifeExpectancyTooSmallWarning() {
+        if (lifeExpectancyWarning == null) {
+            return
+        }
+        lifeExpectancyWarning = null
+    }
 }

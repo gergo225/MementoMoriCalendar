@@ -56,3 +56,23 @@ fun Calendar.percentageOfMonthPassed(): Double {
     val percentage = millisPassedThisMonth.toDouble() / millisInMonth
     return percentage
 }
+
+fun Calendar.yearsAlreadyLived(birthdayMillis: Long?): Int {
+    if (birthdayMillis == null) {
+        return 0
+    }
+
+    timeInMillis = birthdayMillis
+
+    var months = 0
+    while (timeInMillis < System.currentTimeMillis()) {
+        add(Calendar.MONTH, 1)
+        months++
+    }
+    months--
+
+    val monthsLived = months.coerceAtLeast(0)
+    val yearsLived = monthsLived / 12
+
+    return yearsLived
+}

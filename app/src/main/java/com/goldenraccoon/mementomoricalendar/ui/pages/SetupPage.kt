@@ -48,6 +48,7 @@ fun SetupPage(
                     onLifeExpectancyChange = {
                         viewModel.onLifeExpectancyInputChange(it)
                     },
+                    lifeExpectancyWarning = viewModel.lifeExpectancyWarning,
                     isButtonEnabled = viewModel.isFinishEnabled,
                     onFinishClicked = {
                         viewModel.setLifeExpectancy(viewModel.lifeExpectancyInput)

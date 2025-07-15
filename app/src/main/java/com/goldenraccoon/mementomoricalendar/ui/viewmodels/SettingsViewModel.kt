@@ -12,7 +12,9 @@ import com.goldenraccoon.mementomoricalendar.data.percentageOfLifeLived
 import com.goldenraccoon.mementomoricalendar.data.remainingWeeks
 import com.goldenraccoon.mementomoricalendar.data.userSettingsDataStore
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
-import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancy
+import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancyAndBirthday
+import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.isValidLifeExpectancyInput
+import com.goldenraccoon.mementomoricalendar.util.LifeExpectancyValidator.minLifeExpectancyNeeded
 import com.goldenraccoon.mementomoricalendar.widget.WidgetUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -35,11 +37,29 @@ class SettingsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     val isSaveEnabled by derivedStateOf {
-        val lifeExpectancyChanged = lifeExpectancyInput.toIntOrNull() != lifeExpectancyYears.value
-        val birthdayChanged = birthdayMillisInput != initialBirthdayMillis.value
+        val lifeExpectancyChanged = isLifeExpectancyInputChanged()
+        val birthdayChanged = isBirthdayMillisChanged()
 
-        (isValidLifeExpectancy(lifeExpectancyInput) && lifeExpectancyChanged)
-                || (isValidBirthday(birthdayMillisInput) && birthdayChanged)
+        val conditions = mutableListOf<Boolean>()
+
+        if (lifeExpectancyChanged) {
+            val isLifeExpectancyInputValid = isValidLifeExpectancyInput(lifeExpectancyInput)
+            conditions.add(isLifeExpectancyInputValid)
+        }
+        if (birthdayChanged) {
+            val isBirthdayInputValid = isValidBirthday(birthdayMillisInput)
+            conditions.add(isBirthdayInputValid)
+        }
+
+        if (lifeExpectancyChanged || birthdayChanged) {
+            val lifeExpectancy = lifeExpectancyInput.toIntOrNull() ?: lifeExpectancyYears.value
+            val birthdayMillis = birthdayMillisInput ?: initialBirthdayMillis.value
+            val isValidLifeExpectancyAndBirthday = isValidLifeExpectancyAndBirthday(lifeExpectancy, birthdayMillis)
+
+            conditions.add(isValidLifeExpectancyAndBirthday)
+        }
+
+        conditions.isNotEmpty() && conditions.all { it }
     }
 
     var lifeExpectancyInput by mutableStateOf("")
@@ -47,10 +67,26 @@ class SettingsViewModel @Inject constructor(
     var birthdayMillisInput by mutableStateOf<Long?>(null)
         private set
 
+    var lifeExpectancyWarning by mutableStateOf<String?>(null)
+        private set
+    var birthdayWarning by mutableStateOf<String?>(null)
+        private set
+
     fun onLifeExpectancyInputChange(newValue: String) {
         val hasInput = newValue.isNotEmpty()
-        if (hasInput && !isValidLifeExpectancy(newValue)) {
+        if (hasInput && !isValidLifeExpectancyInput(newValue)) {
             return
+        }
+
+        val isLifeExpectancyTooSmall = !isValidLifeExpectancyAndBirthday(
+            newValue.toIntOrNull(),
+            birthdayMillisInput ?: initialBirthdayMillis.value
+        )
+        if (isLifeExpectancyTooSmall) {
+            showLifeExpectancyTooSmallError()
+        } else {
+            hideLifeExpectancyTooSmallError()
+            hideBirthdayTooLateError()
         }
 
         lifeExpectancyInput = newValue
@@ -61,7 +97,19 @@ class SettingsViewModel @Inject constructor(
             return
         }
 
+        val isBirthdayTooLate = !isValidLifeExpectancyAndBirthday(
+            lifeExpectancyInput.toIntOrNull(),
+            newValue
+        )
+
         birthdayMillisInput = newValue
+
+        if (isBirthdayTooLate) {
+            showBirthdayTooLateError()
+        } else {
+            hideBirthdayTooLateError()
+            hideLifeExpectancyTooSmallError()
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -76,10 +124,46 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    private fun isLifeExpectancyInputChanged(): Boolean {
+        val lifeExpectancy = lifeExpectancyInput.toIntOrNull() ?: return false
+        return lifeExpectancy != lifeExpectancyYears.value
+    }
+
+    private fun isBirthdayMillisChanged(): Boolean {
+        val birthdayMillis = birthdayMillisInput ?: return false
+        return birthdayMillis != initialBirthdayMillis.value
+    }
+
     private fun isValidBirthday(value: Long?): Boolean {
         val isPastDate = value != null && value < System.currentTimeMillis()
         val isExistingDate = (value ?: 0) > 0
         return isPastDate && isExistingDate
+    }
+
+    private fun showLifeExpectancyTooSmallError() {
+        val birthdayMillis = birthdayMillisInput ?: initialBirthdayMillis.value
+        val minimumLifeExpectancy = minLifeExpectancyNeeded(birthdayMillis)
+        lifeExpectancyWarning = "Must be $minimumLifeExpectancy or greater."
+    }
+
+    private fun hideLifeExpectancyTooSmallError() {
+        if (lifeExpectancyWarning == null) {
+            return
+        }
+        lifeExpectancyWarning = null
+    }
+
+    private fun showBirthdayTooLateError() {
+        val birthdayMillis = birthdayMillisInput ?: return
+        val minimumLifeExpectancy = minLifeExpectancyNeeded(birthdayMillis)
+        birthdayWarning = "Life expectancy must be $minimumLifeExpectancy or greater for this birthdate."
+    }
+
+    private fun hideBirthdayTooLateError() {
+        if (birthdayWarning == null) {
+            return
+        }
+        birthdayWarning = null
     }
 
     private suspend fun updateLifeExpectancyIfNeeded() {
