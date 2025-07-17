@@ -90,12 +90,6 @@ fun StatisticsPageContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Your life",
-            fontSize = 24.sp,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
-
         CustomCircularProgress(
             modifier = Modifier.height(250.dp),
             text = "Lived: $percentageLived%",
