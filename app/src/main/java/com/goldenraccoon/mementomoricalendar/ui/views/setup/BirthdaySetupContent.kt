@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -47,7 +48,8 @@ fun BirthdaySetupContent(
             isEnabled = isButtonEnabled,
             text = "Continue",
             icon = Icons.AutoMirrored.Default.ArrowForward,
-            iconDescription = "Arrow pointing to the right"
+            iconDescription = "Arrow pointing to the right",
+            modifier = Modifier.imePadding()
         )
     }
 }
