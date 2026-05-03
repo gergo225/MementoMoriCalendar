@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants
-import com.goldenraccoon.mementomoricalendar.util.Constants.WEEKS_IN_YEAR
 import com.goldenraccoon.mementomoricalendar.util.percentageOfDayPassed
 import com.goldenraccoon.mementomoricalendar.util.percentageOfMonthPassed
 import com.goldenraccoon.mementomoricalendar.util.percentageOfWeekPassed
@@ -122,8 +121,20 @@ class StatisticsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    val statYears = statWeeks.map { it.toDouble() / WEEKS_IN_YEAR }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+    val statYears = userSettingsRepository.userSettingsFlow
+        .combine(statsRowType) { settings, statsRowType ->
+            val millisLived = System.currentTimeMillis() - settings.birthdayMillis
+
+            val millis = when (statsRowType) {
+                StatsRowType.LIVED -> millisLived
+                StatsRowType.REMAINING -> {
+                    val millisTotal = settings.lifeExpectancyYears * Constants.MILLIS_IN_YEAR
+                    millisTotal - millisLived
+                }
+            }
+            millis.toDouble() / Constants.MILLIS_IN_YEAR
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0.0)
 
     fun onStatsRowTypeChanged(type: StatsRowType) {
         _statsRowType.update { type }

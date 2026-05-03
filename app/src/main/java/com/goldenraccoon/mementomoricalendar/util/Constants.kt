@@ -6,7 +6,7 @@ object Constants {
     const val DEFAULT_LIFE_EXPECTANCY_YEARS = 80
 
     private const val MILLIS_IN_DAY = 24 * 60 * 60 * 1000L
-    const val MILLIS_IN_YEAR = WEEKS_IN_YEAR * 7 * MILLIS_IN_DAY
+    const val MILLIS_IN_YEAR = (365.25 * MILLIS_IN_DAY).toLong()
 }
 
 object DataStoreConstants {

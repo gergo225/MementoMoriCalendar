@@ -8,6 +8,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.goldenraccoon.mementomoricalendar.data.UserSettingsRepository
 import com.goldenraccoon.mementomoricalendar.util.Constants.DEFAULT_LIFE_EXPECTANCY_YEARS
+import com.goldenraccoon.mementomoricalendar.util.getAlignedElapsedWeeks
 import com.goldenraccoon.mementomoricalendar.widget.current.CurrentPeriodPreferencesWorker
 import com.goldenraccoon.mementomoricalendar.widget.weeks.RemainingWeeksWidgetPreferencesWorker
 import com.goldenraccoon.mementomoricalendar.widget.total.TotalLifeWidgetPreferencesWorker
@@ -33,13 +34,7 @@ class WeeksGridViewModel @Inject constructor(
 
     val elapsedWeeks = userSettingsRepository.birthdayMillis
         .map { birthday ->
-            val currentMillis = System.currentTimeMillis()
-            val elapsedMillis = currentMillis - birthday
-
-            val elapsedDays = TimeUnit.MILLISECONDS.toDays(elapsedMillis)
-            val elapsedWeeks = elapsedDays / 7
-
-            elapsedWeeks.toInt()
+            getAlignedElapsedWeeks(birthday)
         }
         .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = 0)
 

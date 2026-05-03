@@ -2,7 +2,7 @@ package com.goldenraccoon.mementomoricalendar.data
 
 import com.goldenraccoon.mementomoricalendar.proto.UserSettings
 import com.goldenraccoon.mementomoricalendar.util.Constants
-import java.util.concurrent.TimeUnit
+import com.goldenraccoon.mementomoricalendar.util.getAlignedElapsedWeeks
 import kotlin.math.roundToInt
 
 fun UserSettings.remainingWeeks(): Int? {
@@ -10,12 +10,7 @@ fun UserSettings.remainingWeeks(): Int? {
         return null
     }
 
-    val currentMillis = System.currentTimeMillis()
-    val elapsedMillis = currentMillis - birthdayMillis
-
-    val elapsedDays = TimeUnit.MILLISECONDS.toDays(elapsedMillis)
-    val elapsedWeeks = (elapsedDays / 7).toInt()
-
+    val elapsedWeeks = getAlignedElapsedWeeks(birthdayMillis)
     val totalWeeks = lifeExpectancyYears * Constants.WEEKS_IN_YEAR
     return totalWeeks - elapsedWeeks
 }

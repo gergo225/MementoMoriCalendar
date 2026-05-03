@@ -62,17 +62,40 @@ fun Calendar.yearsAlreadyLived(birthdayMillis: Long?): Int {
         return 0
     }
 
-    timeInMillis = birthdayMillis
-
-    var months = 0
-    while (timeInMillis < System.currentTimeMillis()) {
-        add(Calendar.MONTH, 1)
-        months++
+    val birthCalendar = Calendar.getInstance().apply { timeInMillis = birthdayMillis }
+    
+    var years = get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+    
+    val lastBirthdayCalendar = Calendar.getInstance().apply {
+        timeInMillis = birthdayMillis
+        set(Calendar.YEAR, birthCalendar.get(Calendar.YEAR) + years)
     }
-    months--
+    
+    if (timeInMillis < lastBirthdayCalendar.timeInMillis) {
+        years--
+    }
 
-    val monthsLived = months.coerceAtLeast(0)
-    val yearsLived = monthsLived / 12
+    return years.coerceAtLeast(0)
+}
 
-    return yearsLived
+fun getAlignedElapsedWeeks(birthdayMillis: Long?): Int {
+    if (birthdayMillis == null || birthdayMillis == 0L) {
+        return 0
+    }
+
+    val currentCalendar = Calendar.getInstance()
+    val yearsLived = currentCalendar.yearsAlreadyLived(birthdayMillis)
+
+    val birthCalendar = Calendar.getInstance().apply { timeInMillis = birthdayMillis }
+
+    val lastBirthdayCalendar = Calendar.getInstance().apply {
+        timeInMillis = birthdayMillis
+        set(Calendar.YEAR, birthCalendar.get(Calendar.YEAR) + yearsLived)
+    }
+
+    val millisSinceLastBirthday = currentCalendar.timeInMillis - lastBirthdayCalendar.timeInMillis
+    val daysSinceLastBirthday = TimeUnit.MILLISECONDS.toDays(millisSinceLastBirthday)
+    val weeksSinceLastBirthday = (daysSinceLastBirthday / 7).toInt().coerceIn(0, Constants.WEEKS_IN_YEAR - 1)
+
+    return (yearsLived * Constants.WEEKS_IN_YEAR) + weeksSinceLastBirthday
 }
