@@ -15,4 +15,6 @@ object DataStoreConstants {
     const val WIDGET_PERCENTAGE_OF_DAY_KEY = "percentage_of_day_key"
     const val WIDGET_PERCENTAGE_OF_WEEK_KEY = "percentage_of_week_key"
     const val WIDGET_PERCENTAGE_OF_MONTH_KEY = "percentage_of_month_key"
+    const val WIDGET_WEEKS_LIVED_KEY = "weeks_lived_key"
+    const val WIDGET_TOTAL_YEARS_KEY = "total_years_key"
 }

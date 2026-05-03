@@ -26,3 +26,17 @@ fun UserSettings.percentageOfLifeLived(): Int? {
     val percentage = millisLived.toDouble() / millisTotal
     return (percentage * 100).roundToInt()
 }
+
+fun UserSettings.weeksLived(): Int? {
+    if (birthdayMillis == 0L || lifeExpectancyYears == 0) {
+        return null
+    }
+    return getAlignedElapsedWeeks(birthdayMillis)
+}
+
+fun UserSettings.totalYears(): Int? {
+    if (birthdayMillis == 0L || lifeExpectancyYears == 0) {
+        return null
+    }
+    return lifeExpectancyYears
+}
