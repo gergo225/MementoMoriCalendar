@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.goldenraccoon.mementomoricalendar"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.goldenraccoon.mementomoricalendar"
         minSdk = 28
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 4
         versionName = "1.1"
 
