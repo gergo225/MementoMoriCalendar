@@ -1,5 +1,6 @@
 package com.goldenraccoon.mementomoricalendar.widget.total
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
@@ -71,6 +72,7 @@ class TotalLifeWidget : GlanceAppWidget() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Composable
     private fun WidgetContent(
         lifeProgress: Float

@@ -1,14 +1,14 @@
 package com.goldenraccoon.mementomoricalendar.widget.grid
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.createBitmap
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -19,7 +19,6 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
-import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -40,8 +39,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.File
-import androidx.core.graphics.createBitmap
 import androidx.glance.layout.ContentScale
+import androidx.compose.runtime.Composable
+import androidx.glance.ColorFilter
+import androidx.glance.color.DayNightColorProvider
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
+import com.goldenraccoon.mementomoricalendar.ui.theme.DarkColors
+import com.goldenraccoon.mementomoricalendar.ui.theme.LightColors
 
 class WeeksGridWidget : GlanceAppWidget() {
     override val stateDefinition: GlanceStateDefinition<*>
@@ -75,32 +80,18 @@ class WeeksGridWidget : GlanceAppWidget() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Composable
     private fun WidgetContent(
         totalYears: Int,
         weeksLived: Int
     ) {
-        val context = LocalContext.current
-
-        // Resolve colors
-        val filledColor = GlanceTheme.colors.primary.getColor(context).toArgb()
-        val emptyColor = GlanceTheme.colors.primaryContainer.getColor(context).toArgb()
-        val textColor = GlanceTheme.colors.onBackground.getColor(context).toArgb()
-        
-        // Background color blending approx. (Optional: alpha=0.5. Can resolve properly if preferred)
-        val emptyAlphaColor = Color.argb(
-            128,
-            Color.red(emptyColor),
-            Color.green(emptyColor),
-            Color.blue(emptyColor)
-        )
-
         val bitmap = drawWeeksGridBitmap(
             totalYears = totalYears,
             filledCellCount = weeksLived,
-            filledColor = filledColor,
-            emptyColor = emptyAlphaColor,
-            textColor = textColor
+            filledColor = Color.WHITE,
+            emptyColor = Color.argb(51, 255, 255, 255),
+            textColor = Color.WHITE
         )
 
         Box(
@@ -114,6 +105,12 @@ class WeeksGridWidget : GlanceAppWidget() {
                 provider = ImageProvider(bitmap),
                 contentDescription = "Weeks Grid",
                 contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(
+                    DayNightColorProvider(
+                        day = LightColors.primary,
+                        night = DarkColors.primary
+                    )
+                ),
                 modifier = GlanceModifier.fillMaxSize()
             )
         }
@@ -220,6 +217,15 @@ class WeeksGridWidget : GlanceAppWidget() {
         }
 
         return bitmap
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 250, heightDp = 300)
+    @Composable
+    private fun WidgetContentPreview() {
+        GlanceTheme(colors = MementoMoriAppWidgetColorScheme.colors) {
+            WidgetContent(80, 1732)
+        }
     }
 }
 
