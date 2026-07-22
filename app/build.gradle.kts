@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.google.ksp)
     alias(libs.plugins.google.dagger.hilt)
-    alias(libs.plugins.legacy.kapt)
 }
 
 android {
@@ -92,7 +92,7 @@ dependencies {
     // Hilt (Dagger)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Widgets (Glance)
     implementation(libs.androidx.glance.appwidget)

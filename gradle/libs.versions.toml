@@ -13,7 +13,8 @@ hiltNavigationCompose = "1.2.0"
 navigationCompose = "2.8.8"
 daggerHilt = "2.60.1"
 protobuf = "0.10.0"
-kotlin = "2.2.10"
+kotlin = "2.2.21"
+ksp = "2.3.10"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -78,7 +79,7 @@ ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
 google-dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
-legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
 
