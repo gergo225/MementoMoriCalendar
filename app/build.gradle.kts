@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.goldenraccoon.mementomoricalendar"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.goldenraccoon.mementomoricalendar"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 5
         versionName = "1.2"
 
@@ -24,6 +24,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -73,15 +74,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-
-    val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
-
-    // Android Studio Preview support
-    implementation(libs.ui.tooling.preview)
-    debugImplementation(libs.ui.tooling)
 
     // Optional - Add full set of material icons
     implementation(libs.androidx.material.icons.extended)
