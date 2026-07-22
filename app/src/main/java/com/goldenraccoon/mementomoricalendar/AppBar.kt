@@ -40,7 +40,7 @@ fun AppBar(
                 leadingButton()
             }
         },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+        colors = TopAppBarDefaults.topAppBarColors().copy(
             titleContentColor = MaterialTheme.colorScheme.onBackground,
             navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
             actionIconContentColor = MaterialTheme.colorScheme.onBackground
